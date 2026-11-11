@@ -1,0 +1,145 @@
+{
+  "fingerprint": "71afef657a6ee12abf0fb6f280968e2beac35c6c329489bdd2d0197a5857436e",
+  "identity": {
+    "device": "cuda",
+    "native_sha256": "8c1fe82a4830d09ec6710177a4056ca0a67ecf013cf774517e15480fef882780",
+    "plan": {
+      "audit": {
+        "action_cuts": [
+          0.1,
+          0.3
+        ],
+        "replications": 128,
+        "times": [
+          64,
+          256
+        ]
+      },
+      "comparisons": [
+        [
+          "ppo_baseline",
+          "ppo_ablated"
+        ],
+        [
+          "sac_baseline",
+          "sac_ablated"
+        ]
+      ],
+      "conditions": [
+        {
+          "algorithm": "ppo",
+          "channel": {
+            "added_sigma": 0.1,
+            "aggregation": 2,
+            "delay": 1,
+            "uninformative": false
+          },
+          "episode_length": 512,
+          "history_length": 32,
+          "name": "ppo_baseline",
+          "training": {
+            "diagnostic_episodes": 16,
+            "diagnostic_interval": 10000,
+            "num_envs": 2,
+            "total_steps": 1000000
+          }
+        },
+        {
+          "algorithm": "ppo",
+          "channel": {
+            "added_sigma": 0.1,
+            "aggregation": 2,
+            "delay": 1,
+            "uninformative": true
+          },
+          "episode_length": 512,
+          "history_length": 32,
+          "name": "ppo_ablated",
+          "training": {
+            "diagnostic_episodes": 16,
+            "diagnostic_interval": 10000,
+            "num_envs": 2,
+            "total_steps": 1000000
+          }
+        },
+        {
+          "algorithm": "sac",
+          "channel": {
+            "added_sigma": 0.1,
+            "aggregation": 2,
+            "delay": 1,
+            "uninformative": false
+          },
+          "episode_length": 512,
+          "history_length": 32,
+          "name": "sac_baseline",
+          "training": {
+            "diagnostic_episodes": 16,
+            "diagnostic_interval": 10000,
+            "num_envs": 2,
+            "total_steps": 1000000
+          }
+        },
+        {
+          "algorithm": "sac",
+          "channel": {
+            "added_sigma": 0.1,
+            "aggregation": 2,
+            "delay": 1,
+            "uninformative": true
+          },
+          "episode_length": 512,
+          "history_length": 32,
+          "name": "sac_ablated",
+          "training": {
+            "diagnostic_episodes": 16,
+            "diagnostic_interval": 10000,
+            "num_envs": 2,
+            "total_steps": 1000000
+          }
+        }
+      ],
+      "evaluation_episodes": 64,
+      "purpose": "research",
+      "seeds": [
+        20261001,
+        20261002,
+        20261003,
+        20261004,
+        20261005,
+        20261006,
+        20261007,
+        20261008,
+        20261009,
+        20261010
+      ]
+    },
+    "posterior_sha256": "a2cd4f268b3edf0d9004f0144d2fc846a1088497d171fe33e2adcd4c202d1b95",
+    "source_sha256": {
+      "__init__.py": "602298b39022d6a17abde956c071959ef6037d787956bc77cbcc6c7e443bdf6e",
+      "__main__.py": "c2ee4ddb093c9af060cafaf68219907f8a6b7b301ed3f8bea75db7555adec987",
+      "audit.py": "324152751ea39d5cca261835dd0b7acc8ded25c90a5aed85986d41be674f4231",
+      "cli.py": "5622b500a55e4a3beda8b7523a1cd9a59dbae8c31f563baab96b5f31bd22979c",
+      "env.py": "61fff2073ab184467b4c62dec839ca71a484431d576a220683b7a2d206aa0231",
+      "experiment_suite.py": "7e6da75b2cb04b503211f7ea171c9eac043b93c38e501be6dc37d10d21c06246",
+      "models.py": "fb33d0373653a2c95a4315415e34805f9a1fa39495c06156a9bc29f8a4c61f0a",
+      "posterior.py": "dd477b3dadc42f0a65e439a72df1781fec26486dfb3986df18044c83cab067bf",
+      "robust_math.py": "8f9b9d678be8c9ddd9c28aedc38d06d2603b1f23e989adf11ab3c7e47d7478ae",
+      "robust_search.py": "a70ec91867f4c311c84ccbf34eda8200bf2fbffc4d618ab248d7ed6d80165502",
+      "suite_report.py": "002d80a5952fa7464fe2dc8925a4ce51a0a8686c3bbaa1f200d57aedb6dc012b",
+      "torchrl_adapter.py": "d73f2f074958d2d404a5aa522cf1e86cd1ad0b6952a876071d3ae311b9433251",
+      "training.py": "12ffcf180b6fc8997d0c0dbff6ce085b2467e4dd1300348ac0151b92662d3f15"
+    },
+    "summary_sha256": "e0734b89bc3b76a4070a3a046eced646c09dfad2b1f9822b133ca5d5f5a3cf77",
+    "versions": {
+      "gymnasium": "1.3.0",
+      "numpy": "2.1.3",
+      "python": "3.13.15",
+      "torch": "2.11.0+cu128"
+    }
+  },
+  "mcmc_gate": {
+    "maximum_rhat": 1.0089448100364542,
+    "minimum_ess": 606.8603215996856
+  }
+}

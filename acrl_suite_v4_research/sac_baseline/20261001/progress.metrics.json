@@ -1,0 +1,13 @@
+{
+  "agent_0_effective_rank": 5.185417175292969,
+  "agent_0_mean_feature_std": 0.03781088814139366,
+  "agent_1_effective_rank": 3.8263635635375977,
+  "agent_1_mean_feature_std": 0.02591317519545555,
+  "mean_price": 1.4805015735328197,
+  "mean_return_agent_0": 22.50612029270269,
+  "mean_return_agent_1": 22.450196085730568,
+  "mean_total_surplus": 1.1601602166792209,
+  "price_elevation": 0.01659640162128292,
+  "return_std_agent_0": 0.0,
+  "return_std_agent_1": 0.0
+}
