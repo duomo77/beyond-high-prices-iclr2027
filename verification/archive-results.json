@@ -3709,33 +3709,7 @@
   "provenance": {
     "source_hash_count": 13,
     "distributed_implementation_or_calibration_files": [],
-    "zip_members": {
-      "originals/PPO Information Channel.zip": [
-        "main.tex",
-        "media/image_2.png",
-        "media/imgupscaler-enhanced.jpg",
-        "media/image1.png",
-        "rId31.png",
-        "rId27.png",
-        "fancyhdr.sty",
-        "iclr2027_conference.bib",
-        "iclr2027_conference.bst",
-        "iclr2027_conference.sty",
-        "math_commands.tex",
-        "iclr2027_conference.tex",
-        "natbib.sty"
-      ],
-      "originals/Appendix ICLR.zip": [
-        "main.tex",
-        "natbib.sty",
-        "math_commands.tex",
-        "iclr2027_conference.tex",
-        "iclr2027_conference.sty",
-        "iclr2027_conference.bst",
-        "iclr2027_conference.bib",
-        "fancyhdr.sty"
-      ]
-    },
+    "zip_members": {},
     "posterior_hash_recorded": "a2cd4f268b3edf0d9004f0144d2fc846a1088497d171fe33e2adcd4c202d1b95",
     "native_hash_recorded": "8c1fe82a4830d09ec6710177a4056ca0a67ecf013cf774517e15480fef882780",
     "calibration_gate_recorded": {
@@ -3746,8 +3720,8 @@
   "input_sha256": {
     "acrl_suite_v4_research/suite_manifest.json": "19cc97474ff3c3d384c3c23a567ced8b872e0b2381c912525f4f5a3a7fbff7e8",
     "acrl_suite_v4_research/summary.json": "cb532c8f73406d519237afb30ed0595f075956134323999e58f8878863cf70df",
-    "main_corrected.tex": "e945be935c4abab99dfff2385d2f4769495840f48c50eca06ca8798dd08b99ee",
-    "supplement_corrected.tex": "9b4700eb99a280383e669fe491720ea0c6d99429f4a245b4c99c09817e27106d",
+    "main.tex": "5f71471e7ad9d2988cff74283359b65635ccf622299bb5b462d357075e144c60",
+    "supplement.tex": "205d19f124aa9accbcfcce59195d17b66f42784c105ce256782f96d1c7bcc401",
     "acrl_suite_v4_research/ppo_baseline/20261001/job.json": "70991903ee344d1b2b85576cd3367922ba891fe32fda35f3ce194fe1645717da",
     "acrl_suite_v4_research/ppo_baseline/20261001/audit_probes.json": "64c28f158af8141ba1f7f217bc0b8bdf979cd1d45412c3f020c5d5077b409352",
     "acrl_suite_v4_research/ppo_baseline/20261001/policy.curve.csv": "96739e25d726dbddb95e42d8119e2627ecdb4ec8895db54f1ee0c65ef06a200b",

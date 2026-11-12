@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-12",
+  "timezone": "Asia/Seoul",
+  "previous_revision": "3e844aecb0b1b090fbabd154725a980d12b1d468",
+  "page_budget": "8 total PDF pages including references and AI statement",
+  "page_counts": {
+    "main.pdf": 8,
+    "supplement.pdf": 20
+  },
+  "references_and_repository": {
+    "first_reference_page": 8,
+    "repository_on_last_supplement_page": true
+  },
+  "document_checks": {
+    "main": {
+      "labels": 15,
+      "missing_references": [],
+      "layout_errors": [],
+      "text_has_unresolved_tokens": false
+    },
+    "supplement": {
+      "labels": 16,
+      "missing_references": [],
+      "layout_errors": [],
+      "text_has_unresolved_tokens": false
+    }
+  },
+  "official_style_source": "https://media.iclr.cc/Conferences/ICLR2027/iclr-2027-style-files.zip",
+  "official_style_sha256": {
+    "iclr2027_conference.sty": "797deef41724e93761426ac0cbcca46279a91cc650dd1f0ce76a4f08d2098ea6",
+    "iclr2027_conference.bst": "2d67552db7ed38ccfccb5957b52f95656e25c249724761d3cf5f7922ad1844c5",
+    "natbib.sty": "88bc70c0e48461934cab5b2accef06b74a8b3ac45ad03ccd3f2a6b7e0d6d530d",
+    "fancyhdr.sty": "b56ec4434b9f4607529a4b23dc68ad8d4b94f1f631c8cddaf7da78140d53a5ea"
+  },
+  "body_layout_overrides": false,
+  "python": "3.13.0",
+  "numpy": "2.1.2",
+  "archive_status": "completed",
+  "probe_rows_checked": 160,
+  "seed_rows_checked": 20,
+  "checkpoint_hash_matches": 20,
+  "raw_experiment_archive_unchanged": true,
+  "old_manuscript_file_tree_removed": true,
+  "git_history_rewritten": false,
+  "proofreading": {
+    "scope": "Entire rewritten main and new supplement walkthrough; labels, units, domains, exact formulas, old table cells, and conditional implementation claims",
+    "method": "self-review against prior verified derivations and bounded archive/arithmetic checks",
+    "status": "passed"
+  },
+  "sha256": {
+    "main.tex": "5f71471e7ad9d2988cff74283359b65635ccf622299bb5b462d357075e144c60",
+    "main.pdf": "1ba76c40c382c4e9a6e973d0382b32576cdae5c90368b636600cd648f6fc6af6",
+    "supplement.tex": "205d19f124aa9accbcfcce59195d17b66f42784c105ce256782f96d1c7bcc401",
+    "supplement.pdf": "96c737fcb505051962d060c3115b56df0f019bfbe14347ae59e933f6d8a5b51d",
+    "figures/image1.png": "71c07c85427d9c30f80fbc40ad503228f5d8a59c478f1fbd61e929bf6c791a69",
+    "figures/image_2.png": "d8efd68c0a155d7e774742eac882d3665c25c84ef856c53379ad032b478d7922",
+    "scripts/verify_archive.py": "2b021e1087dc0fa7d49675f202788817120acc5cf203a3bb6c9b035955c412bb",
+    "scripts/verify_theory.py": "3ca61eca83f841faae56e15c751f4a9116c4abfff2e033d3e26e8b71459e96b3",
+    "scripts/render_figures.py": "47bf8ef42c1ac4973e4057335e7eab0b2b575b09554900afda61229078be8c5e",
+    "verification/archive-results.json": "6ced2a110ecb8a9505abb2df1f7052da8312f736260dff3cb2d1b6b373238e2a",
+    "verification/theory-results.json": "f12c9f97d5f381a3ccba698c4043ae4114b152cc0adfad26caa4eefad3010d69"
+  },
+  "visual_qa": {
+    "status": "passed: all pages rendered and contact sheets reviewed; final reference, theory, expanded derivation and repository pages inspected at full size",
+    "path": "/private/tmp/bhp-readable-final-qa"
+  },
+  "limitations": [
+    "Original simulator/trainer, posterior/calibration inputs and rollout arrays remain missing.",
+    "Public repository URL identifies the owner; use an anonymized link for double-blind submission.",
+    "No new training or MCMC replication; exact table/summary consistency is a bounded check."
+  ],
+  "whitespace_checks": "git diff --check and staged diff --check passed"
+}

@@ -31,6 +31,27 @@
 
 \appendix
 
+\section*{How to Read This Supplement}
+
+The main paper gives the short argument; this supplement supplies the definitions, derivations, numerical records, and interpretation needed to inspect each step. Sections~A--H retain the technical record and complete probe tables. Section~I explains the main argument in depth, including worked examples, and Section~J gives the public repository address at the end. ``Replaced'' in the main paper means the action-independent ablation recorded as \texttt{ppo\_ablated}; B and A in tables denote informative baseline and ablation. Mathematical firm indices $i\in\{1,2\}$ correspond to archive labels 0 and 1.
+
+\begin{center}
+\begin{tabular}{@{}p{0.25\linewidth}p{0.68\linewidth}@{}}
+\toprule
+Main-paper topic & Where to find the complete explanation \\
+\midrule
+Question and economic logic & A.5 and I.1 explain earlier work and the difference between prices and enforcement. \\
+Market and public reports & B and I.2--I.3 derive benchmarks and trace a cut through aggregation, clipping, and the queue. \\
+GRU and PPO & C and I.4 give the architecture, action units, training/deployment distinction, and configuration. \\
+Counterfactual audit & A.4, E, and I.5--I.6 define pairing, gains, timing, and the exact negative control. \\
+Experimental evidence & D--F and I.7/I.10 provide every seed/probe, uncertainty rules, and worked interpretations. \\
+Trigger/noise benchmark & A.1--A.3 and I.8--I.9 give Bellman algebra, quantifiers, derivatives, and limits. \\
+Welfare and scope & G--H and I.11--I.12 separate definitions, available evidence, and missing replication inputs. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+
 %% ============================================================
 \section{Extended Incentive Analysis}
 %% ============================================================
@@ -59,7 +80,7 @@ The denominator is positive under $\beta>\alpha$, so division yields $\delta^*$.
 
 For each firm and action, compute its own current gain and detection probability. It is not enough to test the highest current-profit action. For example, take $\Delta V = 1$ and $\alpha = 0.05$ and consider two deviations. The larger current-gain action, with $g = 0.9$ and $\beta - \alpha = 0.5$, has threshold $180/271 \approx 0.664207$. A smaller current-gain action, with $g = 0.3$ and $\beta - \alpha = 0.01$, has threshold $60/59 \approx 1.016949$. At discount $0.90$, the largest current-gain action is deterred but the smaller one is not, so testing only the former would miss a profitable deviation. These values are an algebraic illustration, not experimental estimates.
 
-Main-text equation~(9) must hold for every firm's deviation in $C$, with credible punishment after every history entering $P$. Neither this example nor the finite PPO probes establishes those requirements for all prices and histories.
+The main text's all-action incentive condition must hold for every firm's deviation in $C$, with credible punishment after every history entering $P$. Neither this example nor the finite PPO probes establishes those requirements for all prices and histories.
 
 \subsection{Gaussian Noise and Its Boundaries}
 
@@ -81,7 +102,7 @@ For positive base noise, this derivative is positive at $\sigma_a > 0$ and zero 
 
 Under the main text's action-independent channel, identical innovations and initial report queues produce identical reports even after an action intervention. Frozen actors receive only report histories and time. Their next prescribed actions therefore coincide; induction establishes equality at every later date. In a stationary payoff model, all later profit differences vanish. This proves the exact negative control without assuming any optimizer convergence.
 
-The result would fail if actors received action-dependent sales, own-action memory, or rewards as inputs, or if the intervention changed a persistent economic state. During online learning, rewards could also change weights. The archived audit freezes weights, and the PPO execution inputs exclude those additional paths.
+The result need not hold if actors received action-dependent sales, own-action memory, or rewards as inputs, or if the intervention changed a persistent economic state. During online learning, rewards could also change weights. The archived audit freezes weights, and the PPO execution inputs exclude those additional paths.
 
 For a shorter audit, let $H$ observed post-intervention periods remain within an episode ending at $T$, with periods indexed $0,\ldots,T-1$ and intervention at $t_0$. If both branches' rewards lie in $[0, B]$, the absolute omitted discounted gain is bounded by
 \[
@@ -158,7 +179,7 @@ Independent normal priors on these coordinates have means $(0.5, 0.5, -0.5, 0, 0
 
 Labeled cooperative and deviating signals are modeled with normal likelihoods having means $\mu_C$ and $\mu_D$ and shared standard deviation $\sigma$. Labeled benchmark payoffs also use normal likelihoods with a supplied known payoff observation scale. These labels and restrictions are model inputs; the posterior does not discover a cartel label from an unlabeled price series.
 
-The stated calibration supplies monitoring coordinates $(\theta_{\mathrm{lo}},\theta_{\mathrm{hi}},\sigma)=(\mu_D,\mu_C,\sigma)$ to the PPO environment. The manifest also records \texttt{added\_sigma}=0.1. Because the simulator implementation is absent, its rule combining this setting with posterior $\sigma$ into effective report scale $\sigma_\varepsilon$ remains unverified; we do not equate the two scales or assume a variance-addition rule. Their joint rows are sampled uniformly with replacement at each episode reset, preserving empirical cross-coordinate dependence, and held fixed throughout the episode. Thus, posterior randomization in the PPO experiments represents monitoring uncertainty only; it does not randomize demand or cost primitives. Moreover, the linear interpolation in main-text Equation~(4) mapping $\min(p_{1,t},p_{2,t})$ into $[\theta_{\mathrm{lo}},\theta_{\mathrm{hi}}]$ is imposed model structure rather than an empirically estimated relationship between market prices and public reports. Because Equation~(4) clamps $m_t$ to $[\theta_{\mathrm{lo}},\theta_{\mathrm{hi}}]$, the latent signal mean saturates whenever $\min(p_{1,t},p_{2,t}) \leq p^{\mathrm{N}}$ or $\min(p_{1,t},p_{2,t}) \geq p^{\mathrm{J}}$. Consequently, when baseline prices are near $p^{\mathrm{N}}$, different downward price cuts can generate identical clamped latent means $m_t = \theta_{\mathrm{lo}}$, limiting the channel's sensitivity to cut severity.
+The stated calibration supplies monitoring coordinates $(\theta_{\mathrm{lo}},\theta_{\mathrm{hi}},\sigma)=(\mu_D,\mu_C,\sigma)$ to the PPO environment. The manifest also records \texttt{added\_sigma}=0.1. Because the simulator implementation is absent, its rule combining this setting with posterior $\sigma$ into effective report scale $\sigma_\varepsilon$ remains unverified; we do not equate the two scales or assume a variance-addition rule. Their joint rows are sampled uniformly with replacement at each episode reset, preserving empirical cross-coordinate dependence, and held fixed throughout the episode. Thus, posterior randomization in the PPO experiments represents monitoring uncertainty only; it does not randomize demand or cost primitives. Moreover, the linear interpolation in the main text's latent monitoring map mapping $\min(p_{1,t},p_{2,t})$ into $[\theta_{\mathrm{lo}},\theta_{\mathrm{hi}}]$ is imposed model structure rather than an empirically estimated relationship between market prices and public reports. Because the latent monitoring map clamps $m_t$ to $[\theta_{\mathrm{lo}},\theta_{\mathrm{hi}}]$, the latent signal mean saturates whenever $\min(p_{1,t},p_{2,t}) \leq p^{\mathrm{N}}$ or $\min(p_{1,t},p_{2,t}) \geq p^{\mathrm{J}}$. Consequently, when baseline prices are near $p^{\mathrm{N}}$, different downward price cuts can generate identical clamped latent means $m_t = \theta_{\mathrm{lo}}$, limiting the channel's sensitivity to cut severity.
 
 \subsection{Timing, Normalization, and Channel Replacement in the Executed Environment}
 
@@ -607,10 +628,10 @@ Several structural boundaries govern what the analytical benchmark and the PPO a
 \begin{enumerate}
 \item \textbf{Conditional connection between the infinite-horizon benchmark and finite-horizon PPO:} The analytical trigger benchmark in Section~A assumes an infinite horizon with contemporaneous binary threshold signals, whereas the PPO environment passes continuous, two-period-averaged, one-step-delayed reports to a 32-step GRU over a known finite horizon of $T=512$ periods with normalized time included in the actor input and zero terminal value bootstrap. In a complete-information finite repeated game with a unique stage-game Nash equilibrium, backward induction selects stage-equilibrium play in every period. We do not invoke backward induction as a formal convergence theorem for simultaneous gradient-based neural learners under imperfect monitoring, but we emphasize that a known terminal date and observable remaining time fundamentally alter the dynamic learning problem. The near-Nash outcomes in our PPO runs neither refute the infinite-horizon trigger theorem nor prove that neural learners cannot collude in continuing tasks.
 \item \textbf{Input distribution confound:} Replacing the informative channel with $r_{t+1}\sim\mathcal{N}(1.6,0.4^2)$ eliminates action dependence but also changes the marginal mean, variance, and autocorrelation of the report stream. Separating pure information-content effects from input-scale and architecture effects requires moment-matched action-independent placebo channels, history-length controls, and nonrecurrent (MLP) baselines.
-\item \textbf{Signal saturation near Nash:} Because Equation~(4) clamps $m_t$ at $\theta_{\mathrm{lo}}$ when $\min(p_{1,t},p_{2,t})\leq p^{\mathrm{N}}$, price cuts from baseline prices near $p^{\mathrm{N}}$ can saturate the latent signal mean. Nonsaturating signal maps and smaller, adaptive price cuts are needed before interpreting small impulse responses as insensitivity to economically relevant departures.
+\item \textbf{Signal saturation near Nash:} Because the latent monitoring map clamps $m_t$ at $\theta_{\mathrm{lo}}$ when $\min(p_{1,t},p_{2,t})\leq p^{\mathrm{N}}$, price cuts from baseline prices near $p^{\mathrm{N}}$ can saturate the latent signal mean. Nonsaturating signal maps and smaller, adaptive price cuts are needed before interpreting small impulse responses as insensitivity to economically relevant departures.
 \item \textbf{Probe coverage and positive deviations:} Our finite probe family tests two downward cut sizes at two intervention periods. Among the 40 small-cut probes per condition, 3 of 40 under informative monitoring (across two seeds, maximum conditional mean gain $0.003846$) and 1 of 40 under action-independent monitoring (gain $0.000122$) exhibit positive conditional mean gains whose within-policy bootstrap intervals exclude zero individually (unadjusted for multiplicity across probes). Testing upward price changes, best-response searches, multistep deviations, and alternative histories could uncover additional profitable deviations.
 \item \textbf{Missing collusive positive control:} Proposition~1 proves that our action-independent channel serves as an exact zero-response negative control ($\Delta p_t^{\mathrm{rival}}=0$ and $\Delta\pi^{\mathrm{cont}}=0$), but a negative control does not establish statistical power (sensitivity). Validating the audit as a detector with known sensitivity requires evaluating it on a known collusive positive control---such as an explicitly programmed noisy trigger policy or a verified collusive learner---that generates the predicted tradeoff between positive current deviation gains ($g>0$) and larger discounted continuation losses.
-\item \textbf{Model scope and welfare accounting:} All inference is conditional on one retained posterior, one stationary logit demand specification, and ten independent training seeds. A confidence interval spanning zero ($[-0.0241,\,0.0288]$ for price elevation difference) reflects finite-sample uncertainty and is not proof of zero effect. Main-text Equation~(3) defines standard logit total surplus as inclusive-value consumer surplus plus profits, with the outside option as normalization. The simpler expression $(v-c)(q_1+q_2)$ omits preference-surplus terms and is bounded by one, so it cannot represent the archived values near $1.1596$. We retain those values as an \emph{archived welfare index} (the field \texttt{mean\_total\_surplus}), without claiming to have verified its simulator formula. Aggregate mean prices and profits cannot reconstruct nonlinear, period-level welfare; that requires the missing simulator source and price trajectories.
+\item \textbf{Model scope and welfare accounting:} All inference is conditional on one retained posterior, one stationary logit demand specification, and ten independent training seeds. A confidence interval spanning zero ($[-0.0241,\,0.0288]$ for price elevation difference) reflects finite-sample uncertainty and is not proof of zero effect. Section~\ref{app:welfare} defines standard logit total surplus as inclusive-value consumer surplus plus profits, with the outside option as normalization. The simpler expression $(v-c)(q_1+q_2)$ omits preference-surplus terms and is bounded by one, so it cannot represent the archived values near $1.1596$. We retain those values as an \emph{archived welfare index} (the field \texttt{mean\_total\_surplus}), without claiming to have verified its simulator formula. Aggregate mean prices and profits cannot reconstruct nonlinear, period-level welfare; that requires the missing simulator source and price trajectories.
 \end{enumerate}
 
 \subsection{Reproduce the Reported PPO Scope}
@@ -650,6 +671,174 @@ Alternative learners and market primitives & How far do PPO findings generalize?
 \bottomrule
 \end{tabular}
 \end{table}
+
+\section{A Detailed Walkthrough of the Main Paper}\label{app:walkthrough}
+
+This section expands the main paper's shorter explanations. It follows the causal chain that the audit is intended to test: a firm's price cut changes the public report, the changed report affects future actions, and those actions change future profits. The examples below interpret existing archived estimates or illustrate the analytical model. They are not additional training runs or newly observed data.
+
+\subsection{The Central Distinction: A High Price Is an Outcome, Not a Mechanism}
+
+A high price describes what a policy chooses. An enforcement mechanism explains why a firm would reject a tempting alternative. The difference matters because a learning algorithm can select a high price for reasons that have nothing to do with punishment. Limited exploration, an imperfect function approximation, or an unfinished optimization process can all produce a price above a static reference. The present experiments do not identify which of these explanations causes early elevation; they show that early elevation alone is insufficient evidence of dynamic enforcement.
+
+The mechanism we seek has three economic parts. First, cutting the current price must offer a current benefit. Second, the rival must obtain information that changes the subsequent action path. Third, the resulting continuation loss must outweigh that current benefit. A downward rival price response addresses only the second part. A negative total gain from the cut also does not establish all three parts, because the first part may already fail. The audit therefore reports both the immediate and continuation components instead of interpreting a single full-gain number as proof of punishment.
+
+The word ``punishment'' can be used more loosely to describe any adverse reaction. Our narrower use concerns \emph{deterrence}: future consequences make an otherwise profitable action unattractive. A policy may react to a report without producing enough of a loss to deter a deviation. Conversely, a policy can fail the tested cut without admitting that every possible deviation is profitable. These distinctions explain the main paper's restricted conclusion: there is no evidence of continuation deterrence for the specified frozen PPO policies and tested one-step cuts.
+
+\subsection{How the Market Creates a Static Tradeoff}
+
+The logit demand expression in the main paper has an outside-option term equal to one in the denominator. A buyer can therefore choose either firm or neither firm, and $q_1+q_2<1$. Lowering $p_i$ raises the firm's demand but lowers its margin $p_i-c$. Differentiating demand with respect to the firm's own price gives
+\[
+\frac{\partial q_i}{\partial p_i}=-\frac{q_i(1-q_i)}{\mu}.
+\]
+The corresponding profit derivative is
+\[
+\frac{\partial\pi_i}{\partial p_i}
+=q_i\left[1-\frac{(p_i-c)(1-q_i)}{\mu}\right].
+\]
+At an interior best response the bracket is zero. This is an individual-firm calculation: the firm considers its own profit with the rival's current price fixed. Under symmetric prices, numerical solution gives the continuous Nash reference $1.4729266600$. The archived normalization instead uses the nearby grid point $1.473$. Both statements can be true; changing between them silently would change every reported elevation.
+
+For the symmetric joint-profit calculation, write $Q=q_1+q_2$ and let both prices vary together. The derivative of $(p-c)Q(p,p)$ has the factor $1-(p-c)(1-Q)/\mu$. Its root is $1.9249809190$, near the archived grid reference $1.925$. The two benchmarks answer different questions: individual incentives versus coordinated total profit. The elevation index is only the linear location of a mean price between these references. It is not the probability that agents collude, and negative values are valid measurements.
+
+These derivatives also explain an apparently puzzling empirical result. A cut below a price near an individual best response can reduce current profit because the margin loss exceeds the demand gain. That loss does not require any future price response. Accordingly, a cut of a fixed size is an intervention to study, not a guarantee of a positive immediate gain. Finding the best unilateral deviation would require searching the action space rather than assuming that either fixed cut is best.
+
+\subsection{Following a Price Cut Through the Report Queue}
+
+The report channel is deliberately indirect. It does not reveal a pair of prices. The minimum price is mapped into a latent mean, two successive means are averaged, noise is added, and the report waits in a queue. An individual report can consequently be low because of a cut, an earlier price, or a noise realization. More history can help a policy filter these possibilities, but history does not by itself guarantee correct inference or an enforcement strategy.
+
+To follow timing, consider a cut at $t_0$. Actions at $t_0$ use the histories already available. The cut can change $m_{t_0}$ and the report generated after that action. The queue still delivers an older report. At $t_0+1$, actions are again selected before the changed report is delivered. Only at $t_0+2$ can an actor use the report containing the cut. This yields zero rival responses at impact and lag one under the documented timing. The archived mean paths have those two zero entries; source-code confirmation of the queue remains unavailable.
+
+Because the average includes both $m_t$ and $m_{t-1}$, one changed latent mean can enter two generated reports. Any later persistence can then arise from the overlapping report windows, the actor's finite memory, or subsequent actions feeding back into reports. It should not automatically be interpreted as the duration of an intended punishment state. A GRU can implement many continuous response rules, not just a two-state automaton.
+
+Clipping creates a separate observation limit. At $\min(p_1,p_2)\le p^{\mathrm N}$, the mapped mean is already $\theta_{\mathrm{lo}}$. Further cuts leave that mean unchanged. The two tested cut sizes can therefore produce similar report changes even though their immediate profit effects differ greatly. A nonsaturating map or smaller, history-adaptive interventions could help distinguish weak policy sensitivity from weak transmitted signals. Those extensions have not been run here.
+
+The effective report-noise scale must also be distinguished from the posterior scale and the recorded added-noise setting. The metadata show \texttt{added\_sigma}=0.1; they do not reveal the missing simulator's combination rule. An independent-Gaussian variance sum is a valid mathematical construction, but treating it as the implemented rule would be an unsupported inference.
+
+\subsection{What the GRU and PPO Do, and What the Audit Freezes}
+
+The GRU processes the 32-report observation window as a sequence. Its hidden state is restarted at zero for each forward pass, so its memory is a sliding window rather than an unrestricted record of the whole episode. Normalized episode time is then combined with the encoded reports. This matters for interpretation: time is an execution input, and a policy can behave differently near the known terminal date even when the report history looks similar.
+
+PPO changes network parameters during training using sampled actions and rewards. A reward can train the policy without being an observation supplied to the deployed actor. The distinction is essential to the negative-control proof. In the frozen audit, the weights stop changing, and actors receive only the stated report histories and time. They do not receive the intervention's realized profit through an additional observation channel.
+
+If $a\in[-1,1]$ denotes normalized action, the linear price mapping is $p=1.75+0.75a$. A forced action cut $u$ replaces $a$ by $\operatorname{clip}(a-u,-1,1)$. Without clipping, price falls by $0.75u$: $0.075$ for $u=0.1$ and $0.225$ for $u=0.3$. The recorded realized cuts can be checked in the probe files. Describing the nominal action cut as a price cut of the same number would mix units.
+
+The stochastic training rule first samples a latent Gaussian action and then applies $\tanh$. Deployment instead applies $\tanh$ to the latent mean. Nonlinearity means that the latter generally differs from the stochastic policy's expected action. We consequently avoid extending a deterministic-deployment audit to all stochastic deployment rules. Likewise, successful single-agent policy optimization does not prove convergence to a Nash or public perfect equilibrium when two policies learn together.
+
+\subsection{Why Pairing Helps, and Exactly What the Gain Measures}
+
+The control and cut branches share the monitoring draw, pre-intervention history, and innovation sequence. Pairing keeps random market reports from obscuring the profit difference caused by the intervention. It does not make the branches' future actions equal under informative reports: the changed price may change reports and therefore policy inputs. Such divergence is precisely the pathway being measured.
+
+The gain is anchored at $t_0$, so the immediate profit difference has weight one and the next period has weight $\delta$. It includes every remaining period through $511$. A negative continuation term means that the deviator earns less after impact in the cut branch. However, both the deviator and rival can change future prices in response to their shared altered reports. The continuation term therefore measures the total future effect of the intervention on the focal firm's profit, not an isolated causal effect of the rival's actions.
+
+The signed rival-response area is a different estimand. It sums price differences without profit weighting or discounting. Positive and negative price movements may offset. The downward-response statistic instead sums negative parts of the mean response path. Taking the negative part after averaging is not the same operation as averaging the negative part of each individual rollout. Neither area is automatically a measure of an incentive constraint. Reporting their definitions avoids treating similarly named response summaries as interchangeable.
+
+The finite-episode tail is zero for these archived probes because all remaining periods are included. This does not mean there is no economically relevant behavior after a continuing-market horizon, or that multistep deviations have been bounded. The finite tail calculation addresses missing periods inside the specified episode only; Section~A.4 states that scope explicitly.
+
+\subsection{A Step-by-Step View of the Negative Control}
+
+Before the intervention, the branches have the same prescribed actions because their inputs and frozen parameters agree. At impact, the intervention externally replaces one selected action; it does not change the parameters or time input. Under the replacement channel, the next generated report depends on a shared random draw, not either branch's prices. The queues and observation windows therefore remain equal.
+
+Now assume the two branches have equal windows before some subsequent action. Their deterministic actors return equal actions. The price-independent report generator then appends equal reports, preserving equality before the next action. Induction gives equality at every later date. Since the market has no persistent payoff-relevant state in the stated design, equal current prices yield equal current profits. Every post-impact profit difference is zero, making the continuation gain exactly zero in the mathematical model.
+
+Numerically, the 80 stored replaced-channel mean response paths are zero throughout. Full and immediate gain summaries can differ at the order of floating-point roundoff because they are aggregated separately. Such a difference is not an economically meaningful violation of the theorem. More importantly, observing zero in stored summaries does not independently prove that unavailable source code implements every assumption.
+
+The counterfactual could change if actors remembered their own executed actions, observed intervention-dependent rewards or sales, updated their weights online, or interacted through a persistent demand state. These are concrete alternative pathways, not technical details that can be omitted from an invariance claim. The control is exact only because the stated audit excludes them.
+
+\subsection{Why Ten Seeds, Not Thousands of Independent Samples}
+
+For a final-outcome comparison, a paired observation is $(Y_s^B,Y_s^A)$ for training seed $s$. The bootstrap draws ten seed indices with replacement, takes the corresponding paired differences, and averages them. Repeating this 2,000 times approximates the sampling distribution of the ten-seed mean. The interval uses the 2.5th and 97.5th percentiles. The fixed index matrix and generator seed are specified in Section~E so that these summaries can be regenerated.
+
+An audit summary follows the same unit-of-replication rule. Average the four firm--time probe types for a given cut within each seed, then resample the ten seed averages. For the overall response area, average all eight types within each seed before resampling. Counting each of the 128 rollout pairs or each diagnostic checkpoint as an independent trained policy would greatly overstate replication. Repeated observations of a policy do not replace independently trained policies.
+
+A conditional probe interval answers a narrower question: given this one trained policy pair, what is the uncertainty in its average over the evaluation rollouts? The archive stores these intervals but not the individual rollout gains needed to regenerate them. Their equality to the printed probe tables is verified; their underlying bootstrap cannot be rerun independently from summaries alone. Stored rollout quantiles describe the spread of individual outcomes and must not be substituted for confidence limits on a mean.
+
+The paired elevation interval spans zero. It allows either sign of an average channel-replacement effect under this protocol. It does not show that the true effect is zero, and no equivalence margin was prespecified or tested. Conversely, the corrected response-area interval excludes zero, so describing the entire informative response as statistically indistinguishable from zero would be wrong. The practical question of enforcement still depends on magnitudes and profits, not only whether one interval crosses zero.
+
+\subsection{Deriving the Trigger Threshold Without Skipping Steps}
+
+Use $h=\Delta V=\pi^C-\pi^P$ for the \emph{period-payoff} gap and $L=V^C-V^P$ for the \emph{continuation-value} gap. These are different objects. In the absorbing punishment state,
+\[
+V^P=\pi^P+\delta V^P=\frac{\pi^P}{1-\delta}.
+\]
+Before acting in the cooperative state,
+\[
+V^C=\pi^C+\delta[(1-\alpha)V^C+\alpha V^P].
+\]
+Subtracting the first Bellman equation from the second gives
+\[
+L=h+\delta(1-\alpha)L,
+\qquad L=\frac{h}{1-\delta(1-\alpha)}.
+\]
+The denominator is positive for $\delta<1$. A larger false-alarm probability reduces $L$: cooperation is less valuable if an undeserved punishment can interrupt it sooner.
+
+The specified deviator gains $g$ now, but raises the probability of the lower continuation state from $\alpha$ to $\beta$. Its expected loss of continuation value is therefore $\delta(\beta-\alpha)L$, giving
+\[
+V^D-V^C=g-\delta(\beta-\alpha)L.
+\]
+The deviation is unprofitable when the second term is at least $g$. Multiplying by the positive denominator yields
+\[
+g[1-\delta(1-\alpha)]\le\delta(\beta-\alpha)h.
+\]
+Rearrangement gives $g\le\delta D$ with $D=g(1-\alpha)+(\beta-\alpha)h$. Only after imposing $\beta>\alpha$, $g>0$, and $h>0$ is it justified to divide by $D>0$ and obtain the displayed threshold. If $\beta\le\alpha$, the expected future loss cannot offset a strictly positive current gain. A threshold below one exists exactly when $D>g$, or $(\beta-\alpha)h>\alpha g$.
+
+The complete incentive condition repeats this comparison for each firm and action. Section~A.2 illustrates why the currently most profitable deviation need not be the hardest one to deter. Punishment credibility is another requirement: prescribed play in $P$ must itself be optimal. Here it is assumed to be credible Nash play. None of these fixed-strategy conditions proves that PPO finds the strategy.
+
+\subsection{The Gaussian Comparison and Its Restrictions}
+
+At a fixed threshold between the two means, set $z_C=(\tau-\mu_C)/\sigma<0$ and $z_D=(\tau-\mu_D)/\sigma>0$. The Gaussian CDF gives $\alpha=\Phi(z_C)$ and $\beta=\Phi(z_D)$. Since the derivative of $z$ with respect to $\sigma$ is $-z/\sigma$,
+\[
+\alpha'=-z_C\phi(z_C)/\sigma>0,
+\qquad \beta'=-z_D\phi(z_D)/\sigma<0.
+\]
+For $\delta^*=g/D$, differentiating with respect to the probabilities at fixed $g,h$ gives
+\[
+\frac{\partial\delta^*}{\partial\alpha}=\frac{g(g+h)}{D^2}>0,
+\qquad
+\frac{\partial\delta^*}{\partial\beta}=-\frac{gh}{D^2}<0.
+\]
+The chain rule therefore yields a strictly positive derivative with respect to $\sigma$. This is a two-part deterioration: more mistaken punishments and fewer detected deviations. Holding the trigger and payoffs fixed is essential. If agents retrain, means move, or the threshold is changed with noise, these derivatives do not determine the net result.
+
+At very low noise, the threshold separates the two distributions almost perfectly, so $\alpha\to0$ and $\beta\to1$. At very high noise both approach $1/2$, eliminating useful detection differences. The algebraic threshold then approaches two. This does not posit a discount factor of two; it says no admissible discount factor below one can sustain that specified trigger incentive. The same logic explains why action-independent reports provide no action-based continuation deterrence in the restricted frozen-input model.
+
+If an independent extra Gaussian disturbance were added in quadrature, the total scale would satisfy $\sigma_{\mathrm{tot}}^2=\sigma^2+\sigma_a^2$. At positive base noise, the derivative with respect to $\sigma_a$ is zero at $\sigma_a=0$ and positive at positive $\sigma_a$. That hypothetical mathematical statement is included in Section~A.3. It is deliberately not used to fill the missing implementation rule for the recorded \texttt{added\_sigma} field.
+
+\subsection{Reading the Actual Probe Results}
+
+The informative small-cut average is negative, but this is not because it has a large future penalty. The immediate/full ratio is $99.89827997\%$, and for the larger cut it is $99.98971257\%$. These are ratios of mean gains, not averages of individual percentage ratios. The remaining continuation differences are small relative to the loss at impact. Near-Nash baseline prices make a static margin-loss explanation consistent with the observed decomposition.
+
+Consider informative seed 20261001, firm 0, time 64, cut 0.1. Its immediate mean gain is approximately $0.0006133863$ and its full mean gain is $0.0005733491$. The continuation term is about $-0.0000400371$: later changes reduce the benefit, but do not remove it. This probe is a concrete example of a profitable price cut despite a small negative continuation effect.
+
+For informative seed 20261005, firm 0, time 64, cut 0.1, the full mean gain is $0.0038461616$, slightly above its immediate gain of about $0.003834$. The continuation effect does not constitute a loss in that example. Another positive informative probe occurs for the same seed and firm at time 256. The single positive replaced-channel small-cut probe occurs at seed 20261008, firm 0, time 256, with full gain about $0.0001222647$ and no meaningful continuation difference.
+
+The corrected informative mean signed response area is $-1.3628785\times10^{-5}$ price-periods. Its seed-bootstrap interval excludes zero, so there is evidence of a small downward mean response. However, an area has different units from a discounted profit loss, and statistical detectability is not a criterion for an incentive constraint. The audit's conclusion follows from combining the small response with the negligible continuation losses and the existence of positive tested gains. It is not based on asserting that every informative response is zero.
+
+The positive-probe intervals are unadjusted and conditional on particular trained policies. We report the four examples to expose heterogeneity, not as four independent population-level discoveries. The complete tables allow readers to inspect all cases rather than only an average or selected favorable trajectories.
+
+\subsection{Welfare: A Correct Definition and a Separate Archived Field}\label{app:welfare}
+
+For the stated logit demand, normalized expected consumer surplus is the inclusive value
+\[
+\mathrm{CS}(p_1,p_2)=\mu\log\!\left(1+e^{(v-p_1)/\mu}+e^{(v-p_2)/\mu}\right).
+\]
+Normalizing relative to the outside-option baseline removes the irrelevant additive utility constant. Standard total surplus is
+\begin{equation}
+\mathrm{TS}(p_1,p_2)=\mathrm{CS}(p_1,p_2)
++\pi_1(p_1,p_2)+\pi_2(p_2,p_1).
+\label{eq:supp-welfare}
+\end{equation}
+It includes preference surplus, so the bound $\mathrm{TS}\le v-c$ does not follow. In particular, at the continuous symmetric Nash price the formula is about $1.1609510$, while $(v-c)(q_1+q_2)$ is about $0.9427536$. The simpler expression is not the same welfare concept.
+
+The archive labels its output \texttt{mean\_total\_surplus}, with means near $1.1596$. These values are incompatible with an everywhere-bounded-by-one formula, but compatibility with a conventional formula is not proof of implementation identity. The simulator code and period-level price trajectories are missing. Because the welfare expression is nonlinear, substituting an aggregate mean price cannot reconstruct the mean welfare exactly either. We therefore retain the saved values under the explicit label ``archived welfare index'' and avoid making a verified economic welfare claim from them.
+
+This distinction preserves both the mathematical definition and the empirical provenance boundary. Replacing a wrong definition by a plausible one must not silently certify unavailable code. Resolving the remaining question requires the original simulator implementation or sufficiently detailed period-level outputs.
+
+\subsection{How Far the Evidence Can Be Carried}
+
+The analytical model establishes a conditional incentive calculation for a fixed infinite-horizon public strategy. The observations establish properties of a finite set of deployed PPO policies under a fixed environment and finite audit family. The postprocessing establishes consistency of stored outputs, printed tables, bootstrap summaries, and recorded checkpoint hashes. Each layer has a different logical scope.
+
+In particular, a known finite terminal date can change incentives and learning even though the discount is close to one. A 32-report actor cannot be treated as an arbitrary infinite-memory public strategy. A replacement that changes marginal report statistics cannot be interpreted as a pure information treatment. The zero-response negative control does not measure sensitivity to a known positive control. These limits remain after every reported calculation is reproduced correctly.
+
+The current repository supports archive postprocessing. It does not contain the original \texttt{acrl} implementation, native simulator, posterior draws, calibration observations, or individual evaluation-rollout arrays. Accordingly, the revision neither claims a new training replication nor invents missing parameters. Section~G records the available identities, Section~H describes conditional reproduction requirements, and the final repository section lists the public artifacts and rechecking commands.
+
 
 %% ============================================================
 %% References (부록에서만 인용된 문헌 추가)
@@ -708,5 +897,16 @@ A.~Vehtari, A.~Gelman, D.~Simpson, B.~Carpenter, and P.-C.~B\"urkner.
 \newblock \emph{Bayesian Analysis}, 16(2):667--718, 2021.
 
 \end{thebibliography}
+
+\clearpage
+\section{Repository and Available Artifacts}\label{app:repository}
+
+The public repository contains the current main paper, this supplement, the recorded experiment archive, and the scripts used to recheck tables and regenerate figures. The source files are \texttt{main.tex} and \texttt{supplement.tex}; their compiled public versions are \texttt{main.pdf} and \texttt{supplement.pdf}. There is one current pair of manuscripts in the repository file tree. Earlier manuscript files and ZIP packages have been removed from that tree; Git commit history retains revision provenance.
+
+To recheck the stored outputs, run \texttt{python3 scripts/verify\_archive.py} with \texttt{-\/-root .} and \texttt{-\/-output verification/archive-results.json}. The arithmetic checks use \texttt{python3 scripts/verify\_theory.py}; figures are regenerated by \texttt{python3 scripts/render\_figures.py}. These scripts postprocess archived summaries and check file identities. They do not replace the missing original simulator, training implementation, posterior/calibration inputs, or individual-rollout data, and do not deserialize checkpoints or train additional agents.
+
+This public-release repository address identifies its owner; an anonymous review submission should use an anonymized artifact link instead. The public repository is:
+
+\url{https://github.com/duomo77/beyond-high-prices-iclr2027}
 
 \end{document}

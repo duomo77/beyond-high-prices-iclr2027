@@ -62,8 +62,8 @@ def main():
     args = ap.parse_args()
     root = args.root.resolve()
     suite = root / "acrl_suite_v4_research"
-    mainpath = args.main or root / "main_corrected.tex"
-    supppath = args.supplement or root / "supplement_corrected.tex"
+    mainpath = args.main or root / "main.tex"
+    supppath = args.supplement or root / "supplement.tex"
     # Read the selected manuscripts; numerical table comparisons are in supplement.
     mainpath.read_text()
     supplement = supppath.read_text()
@@ -218,7 +218,7 @@ def main():
     # Enumerate actual implementation/calibration files and ZIP contents, not named hashes.
     files = [p for p in root.rglob("*") if p.is_file() and ".git" not in p.parts]
     relevant = [str(p.relative_to(root)) for p in files
-                if not any(part in ["scripts", "referee"] for part in p.relative_to(root).parts)
+                if not any(part in ["scripts", "referee", "verification"] for part in p.relative_to(root).parts)
                 and (p.suffix in [".py", ".cpp", ".c", ".h", ".so", ".toml", ".yaml"]
                      or p.name in ["posterior_draws.csv", "posterior_summary.csv", "research.json"])]
     zips = {}

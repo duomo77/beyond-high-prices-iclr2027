@@ -17,7 +17,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 SUITE = ROOT / 'acrl_suite_v4_research'
-OUT = ROOT / 'main_paper_src/media'
+OUT = ROOT / 'figures'
 SEEDS = range(20261001, 20261011)
 ARMS = [('ppo_baseline', 'Informative', '#2166ac'),
         ('ppo_ablated', 'Action independent', '#b35806')]

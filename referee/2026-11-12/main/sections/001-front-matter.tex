@@ -1,9 +1,0 @@
-
-
-\maketitle
-
-\begin{abstract}
-Observing high prices or correlated price movements does not prove that pricing algorithms have learned collusive punishment. We study how to separate genuine dynamic enforcement from static pricing incentives in a continuous-price duopoly where firms observe only noisy, delayed public reports and learn via recurrent proximal policy optimization (PPO). First, we establish two analytical benchmarks: a two-state public trigger model characterizing when future continuation losses deter unilateral price cuts, and a Gaussian monitoring model showing how observation noise weakens deterrence by raising both false alarms and missed detections. Second, we audit frozen GRU-PPO policies using paired counterfactual price-cut interventions and an action-independent signal ablation that serves as a proved negative control. Across ten training seeds and one million market interactions per run, normalized price elevation falls from $0.43$ in early training to $0.015$ under informative monitoring and $0.019$ after signal ablation, with a paired difference of $0.0037$ (95\% bootstrap CI: $[-0.0241,\,0.0288]$). Crucially, the payoff losses from forced price cuts occur almost entirely in the intervention period itself rather than through subsequent continuation losses, and several small deviations remain profitable. Rival price responses are negligible under informative monitoring and identically zero under ablation. Together, these findings distinguish apparent coordination from information-mediated enforcement and show no evidence of learned trigger punishment in this setting.
-\end{abstract}
-
-%% ============================================================
