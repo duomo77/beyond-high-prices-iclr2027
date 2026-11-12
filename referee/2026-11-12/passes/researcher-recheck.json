@@ -1,0 +1,79 @@
+{
+  "pass_id": "researcher-recheck",
+  "reviewer": "researcher",
+  "primary_verdict": "No new mathematical errors found in the specified changed passages; original local findings repaired or transparently scoped as unverified",
+  "provenance": "Same separate-agent reviewer as original researcher pass, reviewing coordinator edits against own original findings; not a fresh independent reviewer. Original temp inputs may differ from authoritative Git snapshots by one trailing newline as reported by coordinator.",
+  "inputs": {
+    "main_corrected.tex": {
+      "path": "/Users/gimjunseong/Documents/paper/beyond-high-prices-iclr2027/main_corrected.tex",
+      "sha256": "e945be935c4abab99dfff2385d2f4769495840f48c50eca06ca8798dd08b99ee"
+    },
+    "supplement_corrected.tex": {
+      "path": "/Users/gimjunseong/Documents/paper/beyond-high-prices-iclr2027/supplement_corrected.tex",
+      "sha256": "9cc78566e6e54e98f75e6d395533c84e107d2dcf62df5fd9a6ceaebd18c05f21"
+    },
+    "scripts/verify_theory.py": {
+      "path": "/Users/gimjunseong/Documents/paper/beyond-high-prices-iclr2027/scripts/verify_theory.py",
+      "sha256": "3ca61eca83f841faae56e15c751f4a9116c4abfff2e033d3e26e8b71459e96b3"
+    }
+  },
+  "issues": [],
+  "checks": [
+    {
+      "target": "Original researcher-F001: trigger domain and case split",
+      "status": "passed",
+      "detail": "main setup explicitly beta in (alpha,1]; supplement A.1 explicitly 0<=alpha<beta<=1, 0<=delta<1. This makes the threshold denominator positive. Added beta<=alpha case correctly gives VD-VC>=g>0; no unsafe division remains."
+    },
+    {
+      "target": "Original researcher-F002: total surplus definition, argument ordering and archived metric",
+      "status": "passed as theoretical definition, archived implementation remains unverified",
+      "detail": "TS=mu log(1+sum exp((v-pk)/mu))+pi_i(pi,pj)+pi_j(pj,pi) uses the correct argument order for own-price-first profit functions. The outside-option normalization is consistent. The text/table separately label archived values as an archived welfare index and do not claim equality to the theoretical formula."
+    },
+    {
+      "target": "Original researcher-F003: grid references and continuous roots",
+      "status": "passed",
+      "detail": "Operational E and signal-map pN/pJ now use 1.473/1.925; continuous roots use separate subscript-cont notation in supplement B.1 and are explicitly not substituted into archived E. Stated symmetric Nash and joint-profit FOCs are correct."
+    },
+    {
+      "target": "Original researcher-F004: tail indexing",
+      "status": "passed",
+      "detail": "Periods are explicitly 0,...,T-1. Observing H post-impact rewards covers t0+1,...,t0+H; omitted tail begins t0+H+1 and ends T-1. H=T-t0-1 makes the lower limit T and the sum empty. Each reward difference is bounded by B because both rewards lie in [0,B], so B*delta^(H+1)/(1-delta) is a valid upper bound for delta in [0,1)."
+    },
+    {
+      "target": "Original researcher-F005: feature rank interpretation",
+      "status": "passed",
+      "detail": "Changed main passage retains the descriptive difference and expressly withholds causal attribution. It is consistent with the supplement limitations."
+    },
+    {
+      "target": "Original researcher-F006: quantifier example",
+      "status": "passed",
+      "detail": "High g=.9,Delta=.5 gives 180/271=.664206642; low g=.3,Delta=.01 gives 60/59=1.016949153. At delta=.9, the former is deterred and the latter is profitable. This now illustrates the stated quantifier problem."
+    },
+    {
+      "target": "Added G and area formulas in supplement E",
+      "status": "passed as mathematical definitions",
+      "detail": "G=d_t0+sum_{t=t0+1}^{T-1}delta^(t-t0)d_t correctly puts impact at discount 1 and first continuation reward at delta. A sums rival price responses over the same post-impact dates without discounting. No extra factor delta or missing impact term is introduced. Under invariance all continuation summands and A are zero. Source implementation conformity cannot be independently established without the missing simulator/audit implementation."
+    },
+    {
+      "target": "Changed area result and interpretation",
+      "status": "passed for internal numerical/claim consistency",
+      "detail": "Mean -1.3628785e-5 rounds to main -1.36e-5; interval [-2.5298314e-5,-3.4169651e-6] rounds to [-2.53e-5,-3.42e-6]. This interval excludes zero, matching statistically resolved wording. Small magnitude and negligible continuation loss do not establish enforcement. Parent verifier supplied source-data recomputation; this lane did not rerun archive bootstrap."
+    },
+    {
+      "target": "Added noise scale handling",
+      "status": "passed as an explicitly unresolved source-dependent obligation",
+      "detail": "Posterior sigma is distinguished from effective report-noise sigma_epsilon. Text does not silently impose sigma_epsilon=sigma or a variance-addition formula. Supplement A.3 variance addition is explicitly conditional on an independent additional Gaussian and does not assert the missing implementation uses that rule."
+    },
+    {
+      "target": "scripts/verify_theory.py",
+      "status": "passed bounded corroboration",
+      "command": "python3 scripts/verify_theory.py",
+      "detail": "Executed successfully. Exact counterexample gain 27/19 and corrected fractions verified; 1000 sampled IC cases and eight Gaussian noise scales passed, with roots 1.4729266600306228 and 1.9249809190177616. These finite checks are not a universal proof."
+    }
+  ],
+  "scope_limits": [
+    "Changed mathematical and claim passages only; not a full new manuscript referee pass.",
+    "Changed external prior-art attribution was not authenticated in this lane.",
+    "Archived welfare implementation, added_sigma combination, raw G implementation, and exact area-bootstrap recomputation remain source/data-dependent outside this recheck; parent verifier covers available archive arithmetic."
+  ]
+}

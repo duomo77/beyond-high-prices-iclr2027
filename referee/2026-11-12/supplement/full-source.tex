@@ -1,0 +1,701 @@
+\documentclass{article}
+
+% 본문과 동일한 ICLR 스타일 파일 로드 (연도/파일명은 실제 업로드한 파일에 맞게 수정)
+\usepackage{iclr2027_conference}
+
+\usepackage{times}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{siunitx}
+\usepackage{caption}
+
+% 부록용 theorem 환경 (본문과 일관성 유지)
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+
+% 표 캡션 포맷팅 (부록 표는 Table S1 등으로 구분 권장)
+\captionsetup[table]{font=small, skip=4pt}
+
+\title{Beyond High Prices: Auditing Information-Mediated Enforcement in Recurrent Pricing Agents \\ \large Supplementary Material}
+
+\author{Anonymous}
+
+\begin{document}
+
+\maketitle
+
+\appendix
+
+%% ============================================================
+\section{Extended Incentive Analysis}
+%% ============================================================
+
+This supplement gives extended proofs, the executed PPO configuration, and all 160 conditional price-cut estimates. It reanalyzes the archived ten-seed sample in each condition; no additional policies were trained. The main manuscript frames the study as a causal audit of information-channel dependence, not as a replication of every Q-learning result in the algorithmic-collusion literature.
+
+\subsection{The Value Difference and the Threshold}
+
+Consider the main text's stationary repeated game with absorbing, credible punishment. Write bounded cooperative, punishment, and specified one-period deviation payoffs as $\pi^C$, $\pi^P$, and $\pi^D$. Let $g = \pi^D - \pi^C$ and $\Delta V = \pi^C - \pi^P$. Assume $g > 0$ and $\Delta V > 0$. The signal depends on current actions; the deviator subsequently follows the prescribed automaton.
+
+Subtract the punishment Bellman equation from the cooperative equation. Both values are evaluated before the current action. This timing gives
+\[
+V^C - V^P = \frac{\pi^C - \pi^P}{1 - \delta(1 - \alpha)}.
+\]
+Since $\delta < 1$, the unique value difference is well defined. The deviation changes today's profit and the probability of entering punishment. Therefore
+\[
+V^D - V^C = g - \delta(\beta - \alpha)(V^C - V^P).
+\]
+Multiplying by the positive denominator preserves the inequality. The deviation is unprofitable if and only if
+\[
+\delta \geq \frac{g}{g(1 - \alpha) + (\beta - \alpha)\Delta V}.
+\]
+Division yields $\delta^*$. The strict feasibility condition $\delta^* < 1$ is equivalent to $(\beta - \alpha)\Delta V > \alpha g$. Equality permits only $\delta = 1$, excluded here. If the threshold exceeds one, no admissible discount factor deters the specified deviation. A numerical threshold above one is therefore an infeasibility indicator, not an economically valid patience parameter.
+
+\subsection{Why the Quantifier Matters}
+
+For each firm and action, compute its own current gain and detection probability. It is not enough to test the highest current-profit action. For example, take $\Delta V = 1$ and $\alpha = 0.05$ and consider two deviations. An action with $g = 0.3$ and $\beta - \alpha = 0.5$ has threshold $60/157 \approx 0.382166$. Another with $g = 0.9$ and $\beta - \alpha = 0.01$ has threshold $180/173 \approx 1.040462$. At discount $0.90$, the first is deterred and the second is not. These values are an algebraic illustration, not experimental estimates.
+
+Main-text equation~(9) must hold for every firm's deviation in $C$, with credible punishment after every history entering $P$. Neither this example nor the finite PPO probes establishes those requirements for all prices and histories.
+
+\subsection{Gaussian Noise and Its Boundaries}
+
+For a fixed threshold $\tau$ between $\mu_D$ and $\mu_C$, let $\sigma$ be the signal standard deviation. Define $z_C = (\tau - \mu_C)/\sigma < 0$ and $z_D = (\tau - \mu_D)/\sigma > 0$. The normal tail probabilities are $\alpha = \Phi(z_C)$ and $\beta = \Phi(z_D)$. Differentiation gives
+\[
+\frac{\partial \Delta}{\partial \sigma} = -\frac{1}{\sigma}\bigl[z_D \phi(z_D) - z_C \phi(z_C)\bigr] < 0.
+\]
+Combining these derivatives with the derivatives of $\delta^*$ gives
+\[
+\frac{\partial \delta^*}{\partial \sigma} = \frac{g\bigl[(g + \Delta V)\alpha'(\sigma) - \Delta V\,\beta'(\sigma)\bigr]}{\bigl[g(1-\alpha) + (\beta-\alpha)\Delta V\bigr]^2} > 0.
+\]
+Both channels of deterioration matter: more false punishment reduces the cooperative value, and lower detection reduces the expected loss caused by a deviation. As $\sigma$ tends to zero, the threshold tends to $g/(g + \Delta V)$. As $\sigma$ tends to infinity, it tends to $2$. If an additional independent Gaussian noise scale is $\sigma_a$, then $\sigma_{\mathrm{tot}}^2 = \sigma^2 + \sigma_a^2$ and
+\[
+\frac{\partial \delta^*}{\partial \sigma_a} = \frac{\partial \delta^*}{\partial \sigma_{\mathrm{tot}}} \cdot \frac{\sigma_a}{\sigma_{\mathrm{tot}}}.
+\]
+For positive base noise, this derivative is positive at $\sigma_a > 0$ and zero at $\sigma_a = 0$. The threshold is still strictly higher at any positive added scale than at zero. This distinction prevents an incorrect claim of a strictly positive derivative at the boundary. The result holds the threshold, means, payoffs, and trigger strategy fixed. It does not sign the response of retrained PPO policies.
+
+\subsection{Observation Invariance and Finite Audit Horizons}
+
+Under the main text's action-independent channel, identical innovations and initial report queues produce identical reports even after an action intervention. Frozen actors receive only report histories and time. Their next prescribed actions therefore coincide; induction establishes equality at every later date. In a stationary payoff model, all later profit differences vanish. This proves the exact negative control without assuming any optimizer convergence.
+
+The result would fail if actors received action-dependent sales, own-action memory, or rewards as inputs, or if the intervention changed a persistent economic state. During online learning, rewards could also change weights. The archived audit freezes weights, and the PPO execution inputs exclude those additional paths.
+
+For a shorter audit, let $H$ observed post-intervention periods remain within an episode ending at $T$, with intervention at $t_0$. If both branches' rewards lie in $[0, B]$, the absolute omitted discounted gain is bounded by
+\[
+\left| \sum_{t=t_0+H+1}^{T} \delta^{t-t_0} (\pi_t^{\mathrm{cut}} - \pi_t^{\mathrm{ctrl}}) \right| \leq \frac{\delta^{H+1} B}{1-\delta}.
+\]
+Here $B = 1.5$ is valid because price minus cost is at most $1.5$ and demand is at most one. The archived probes use $H = T - t_0 - 1$, so this omitted finite-episode tail is zero. This does not bound deviations outside the probe family or establish immunity in an infinite-horizon game.
+
+\subsection{Comparison with Classical and Algorithmic Imperfect Public Monitoring}
+
+Table~\ref{tab:lit_comparison} summarizes how the present study relates to classical imperfect-monitoring repeated-game theory and prior algorithmic pricing studies. Classical repeated-game models \citep{green1984noncooperative, abreu1990toward, fudenberg1994folk} analyze infinite-horizon games in which firms observe a contemporaneous noisy public signal and follow a pre-specified public strategy (such as a two-state threshold trigger or self-generating continuation-value automaton). In those models, dynamic enforcement is characterized analytically by comparing immediate deviation gains against discounted continuation value losses.
+
+In the algorithmic pricing literature, \citet{calvano2020artificial} demonstrate that independent tabular Q-learning agents can converge to supra-competitive prices under perfect price observation, and \citet{calvano2021algorithmic} extend tabular Q-learning to an imperfect public monitoring environment adapted from \citet{green1984noncooperative}. In \citet{calvano2021algorithmic}, firms do not observe rival prices directly; instead, conditioning on a finite window of past noisy signals allows discrete-price Q-learning agents to sustain elevated markups via finite-duration ``price wars'' triggered by adverse demand or signal realizations. Conversely, recent deep reinforcement learning studies such as \citet{deng2025exploring} compare tabular Q-learning, DQN, and PPO under perfect monitoring and focus primarily on converged price elevation.
+
+\begin{table}[t]
+\centering
+\caption{Comparison across imperfect public monitoring and algorithmic pricing studies.}
+\label{tab:lit_comparison}
+\footnotesize
+\begin{tabular}{@{}p{0.21\linewidth}p{0.18\linewidth}p{0.23\linewidth}p{0.11\linewidth}p{0.21\linewidth}@{}}
+\toprule
+Study & Strategy / Learner & Action \& Signal Space & Horizon & Primary Diagnostic \\
+\midrule
+\citet{green1984noncooperative}; \citet{abreu1990toward}; \citet{fudenberg1994folk}
+  & Fixed trigger / PPE automaton (analytical)
+  & Continuous or finite actions; contemporaneous public signal
+  & Infinite ($\delta < 1$)
+  & Analytical IC threshold \& self-generating continuation sets \\
+\addlinespace[3pt]
+\citet{calvano2020artificial}
+  & Tabular Q-learning
+  & Discrete price grid; perfect price observation
+  & Infinite
+  & Converged markup $\Delta$ \& deviation impulse path \\
+\addlinespace[3pt]
+\citet{calvano2021algorithmic}
+  & Tabular Q-learning with finite memory
+  & Discrete price grid; noisy signal history
+  & Infinite
+  & Converged markup $\Delta$ \& finite price-war path \\
+\addlinespace[3pt]
+\citet{deng2025exploring}
+  & TQL, DQN, PPO
+  & Discrete / continuous prices; perfect monitoring
+  & Infinite / episodic
+  & Cross-algorithm price elevation comparison \\
+\addlinespace[3pt]
+Present study
+  & Recurrent PPO (32-step GRU)
+  & Continuous prices $[1,2.5]$; delayed 2-period Gaussian report + ablated control
+  & Finite $T=512$ with time input
+  & Immediate vs.\ continuation payoff decomposition \& proved negative control \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Our study addresses a distinct methodological and diagnostic gap. Rather than asking only whether converged prices exceed the static Nash benchmark or whether visual price dips follow an exogenous shock, we audit frozen continuous-action neural policies by decomposing the total payoff change from a forced unilateral price cut into its \emph{immediate impact component} ($\Delta\pi_{t_0}$) and its \emph{discounted continuation component} ($\Delta\pi^{\mathrm{cont}}$), paired with an exact action-independent channel replacement (\texttt{ppo\_ablated}, main-text Proposition~1) that provides a proved zero-response negative control. Our findings in the recurrent PPO setting do not refute the tabular Q-learning price-war results of \citet{calvano2021algorithmic}; rather, they show how counterfactual payoff decomposition and channel replacement separate genuine information-mediated continuation threats from immediate static profit losses.
+
+%% ============================================================
+\section{Monitoring Calibration and Signal Timing}
+%% ============================================================
+
+\subsection{Reference Prices and Parameterization of the Calibration Model}
+
+In the stationary logit market ($c=1$, $v=2$, outside utility $0$, market size $1$, $\mu=0.25$, $p_{i,t}\in[1,2.5]$), the simulator computes symmetric one-shot Nash and joint-profit reference prices on a $1{,}501$-point grid, and an independent continuous root-finding calculation yields $p^{\mathrm{N}} = 1.472927$ and $p^{\mathrm{J}} = 1.924981$. This numerical check verifies the static reference benchmarks rather than equilibrium of the learned policies. Normalized price elevation $E = (\bar{p}-p^{\mathrm{N}})/(p^{\mathrm{J}}-p^{\mathrm{N}})$ is retained without clipping to $[0,1]$; it is a linear position index between static reference prices, not a structural probability of collusion.
+
+The native calibration model has six unconstrained coordinates $\theta$. At the fixed threshold $\tau$, it decodes them as
+\[
+\mu_C = \tau + \exp(\theta_1), \quad \mu_D = \tau - \exp(\theta_2), \quad \sigma = \exp(\theta_3).
+\]
+Independent normal priors on these coordinates have means $(0.5, 0.5, -0.5, 0, 0, 0)$ and standard deviations $(1, 1, 1, 2, 2, 2)$. Specifically, Gaussian priors are placed on the log distances of the cooperative and deviating means from the threshold $\tau$ and on the log signal scale. The implementation rejects absolute values above $20$ for the log coordinates and above $100$ for the payoff location; thus the implemented target has numerical support bounds. The priors are defined on the coordinates actually sampled, and no change-of-variables Jacobian is added to that coordinate-space target.
+
+Labeled cooperative and deviating signals are modeled with normal likelihoods having means $\mu_C$ and $\mu_D$ and shared standard deviation $\sigma$. Labeled benchmark payoffs also use normal likelihoods with a supplied known payoff observation scale. These labels and restrictions are model inputs; the posterior does not discover a cartel label from an unlabeled price series.
+
+Crucially, while the native calibration model estimates both monitoring and benchmark payoff parameters, only the three monitoring coordinates $(\theta_{\mathrm{lo}}, \theta_{\mathrm{hi}}, \sigma_\varepsilon) = (\mu_D, \mu_C, \sigma)$ enter the PPO environments. Their joint rows are sampled uniformly with replacement at each episode reset, preserving empirical cross-coordinate dependence, and held fixed throughout the episode. Thus, posterior randomization in the PPO experiments represents monitoring uncertainty only; it does not randomize demand or cost primitives. Moreover, the linear interpolation in main-text Equation~(4) mapping $\min(p_{1,t},p_{2,t})$ into $[\theta_{\mathrm{lo}},\theta_{\mathrm{hi}}]$ is imposed model structure rather than an empirically estimated relationship between market prices and public reports. Because Equation~(4) clamps $m_t$ to $[\theta_{\mathrm{lo}},\theta_{\mathrm{hi}}]$, the latent signal mean saturates whenever $\min(p_{1,t},p_{2,t}) \leq p^{\mathrm{N}}$ or $\min(p_{1,t},p_{2,t}) \geq p^{\mathrm{J}}$. Consequently, when baseline prices are near $p^{\mathrm{N}}$, different downward price cuts can generate identical clamped latent means $m_t = \theta_{\mathrm{lo}}$, limiting the channel's sensitivity to cut severity.
+
+\subsection{Timing, Normalization, and Channel Replacement in the Executed Environment}
+
+\begin{table}[t]
+\centering
+\caption{Signal generation and delivery sequence within one market period.}
+\label{tab:timing}
+\small
+\begin{tabular}{@{}cl@{}}
+\toprule
+Stage & Operation \\
+\midrule
+1 & Both firms act using the existing 32-report window and time. \\
+2 & The C++ core maps actions to prices and computes demand and profits. \\
+3 & The minimum price determines the clipped latent monitoring mean. \\
+4 & The last two available latent means are averaged; one normal innovation is added. \\
+5 & The generated report enters a one-element queue; the oldest report is delivered. \\
+6 & The delivered report is normalized and appended to the next observation. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A price change at time $t$ first changes the generated report at $t$. With delay one, that report is delivered after the action at $t+1$, so the earliest actor response is at $t+2$. This accounts for the initial zero entries of the informative impulse response. Overlapping two-period latent-mean windows can spread the signal effect across reports. Normalization of the delivered report is public and fixed across all runs: the delivered report is centered at $1.6$, divided by $0.4$, and clipped to $[-5,5]$. Initial 32-report histories are filled with zeros, and pending queue entries at reset are neutral. No hidden posterior parameter $\theta$ is ever supplied directly to the actor.
+
+The ablation replaces the generated report by $r_{t+1} \sim \mathcal{N}(1.6, 0.4^2)$ independently of prices. Delay, observation window length, economic primitives, and training budgets are unchanged. This replacement enforces exact action independence rather than a numerical approximation to infinite noise variance. However, it also changes the marginal mean and scale of the delivered reports relative to the informative channel. Consequently, retraining under the ablated channel identifies the total effect of this channel replacement, not a pure information-content effect holding all marginal input moments fixed. At the same time, the ablation retains shared randomness: both firms observe the same public draw $r_{t+1}$, and identical innovation consumption across paired branches maintains common-random-number alignment.
+
+%% ============================================================
+\section{PPO Implementation and Executed Configuration}
+%% ============================================================
+
+The two firms use distinct actor--critic parameters and independent Adam optimizers \citep{schulman2017proximal}. Both firms learn simultaneously in the same market, so single-agent PPO convergence arguments do not imply convergence to a game-theoretic equilibrium. Actors receive neither rivals' prices nor their own realized profits as execution inputs, although each firm's realized rewards train its policy during optimization.
+
+The GRU architecture choice follows directly from the observation structure rather than a claim about commercial pricing software: because the public report averages two consecutive latent price states, adds Gaussian innovation noise, and arrives after a one-step queue delay, a single scalar observation cannot determine whether an adverse report reflects an isolated noise draw or a rival's unilateral price cut \citep{green1984noncooperative, calvano2021algorithmic}. A gated recurrent unit \citep{cho2014gru} provides a compact, differentiable finite-memory sequence encoder over the 32-report window while PPO handles continuous price actions in $[1,2.5]$. Each forward pass recomputes the 128-unit GRU from a fresh zero hidden state across the 32-report window, concatenates normalized episode time $t/512$, and applies a linear projection, $\tanh$, and layer normalization. Thus the implementation is a bounded 32-step sliding-window encoder rather than an unbounded episode-long recurrent state. Policy and value heads share this encoder within each firm, with no weight sharing across firms and no centralized critic. We use GRU+PPO strictly as a controlled testbed for auditing history-dependent continuous pricing policies, and no comparison with an MLP or CNN on the same window is claimed here.
+
+During training, the actor samples a latent Gaussian action and applies $\tanh$ before linearly mapping $[-1,1]$ to prices in $[1,2.5]$ (with action-to-price slope $0.75$). Its log-density includes the analytic $\tanh$ Jacobian correction. This Gaussian action distribution governs training exploration and is distinct from the Gaussian observation noise $\varepsilon_t$, the Gaussian calibration likelihood, and the Gaussian calibration priors (none of which involves Gaussian-process regression or Bayesian optimization). All reported diagnostic curves, final evaluations, and counterfactual audits deploy the frozen deterministic policy $\mu(s)$ obtained by applying $\tanh$ to the latent actor mean. Because $\tanh$ is nonlinear, $\mu(s)$ does not generally equal the expected action under the stochastic training policy; all audit claims apply specifically to this deterministic deployment rule.
+
+\begin{table}[t]
+\centering
+\caption{Configuration recorded in the completed job files.}
+\label{tab:config}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+Parameter & Executed Value \\
+\midrule
+Training seeds in each condition & 20261001 through 20261010 \\
+Training interactions per run & \num{1000000} joint market transitions \\
+Parallel environments and episode length & 2 environments; 512 periods \\
+Public history and encoder width & 32 reports; 128 GRU units \\
+Full rollout size & \num{2048} periods per environment; \num{4096} transitions \\
+Optimization epochs and minibatch & 10; 256 \\
+Adam learning rate and epsilon & \num{0.0003}; \num{0.00001} \\
+Discount and GAE parameter & 0.99; 0.95 \\
+PPO clipping and entropy coefficient & 0.2; 0.01 \\
+Value coefficient and gradient norm cap & 0.5; 0.5 \\
+Initial actor log std.\ dev. & $-0.5$; clamped to $[-5, 2]$ during use \\
+Informative channel & Delay 1; aggregation 2; added noise scale 0.1 \\
+Action-independent channel & Same delay; report $\sim \mathcal{N}(1.6, 0.4^2)$ \\
+Diagnostics and final evaluation & 100 checkpoints $\times$ 16 episodes; final 64 episodes \\
+Probe family and paired repetitions & 2 firms $\times$ 2 times $\times$ 2 cuts; 128 pairs per probe \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Advantages are standardized within the complete rollout separately for each firm, using the population standard deviation plus $\epsilon$. For likelihood ratio $r_t$ and standardized advantage $\hat{A}_t$, the minimized loss is
+\[
+L = -\min(r_t \hat{A}_t, \operatorname{clip}(r_t, 1-\varepsilon, 1+\varepsilon)\hat{A}_t) + c_v \cdot \tfrac{1}{2} \mathrm{MSE} - c_e H.
+\]
+The effective MSE coefficient is $0.25$ because the code multiplies MSE by $0.5$ and then applies value coefficient $0.5$. Entropy is estimated for the bounded $\tanh$ policy, not its base normal. Stored pre-$\tanh$ actions avoid inverse-$\tanh$ instability.
+
+Episode termination has zero bootstrap; nonterminal rollout boundaries use the next-state value. A shortened final rollout reaches exactly one million interactions. Environments reset synchronously. Deployment uses $\tanh$ of the latent mean; stochastic-policy performance is not reported.
+
+%% ============================================================
+\section{Complete Final Outcomes by Training Seed}
+%% ============================================================
+
+\begin{table}[t]
+\centering
+\caption{Final evaluation of every completed PPO policy pair. Each row averages 64 evaluation episodes. B denotes informative baseline and A denotes action-independent retraining. Seed suffix 01 denotes 20261001, continuing through 10. Rank columns describe projected, time-augmented encoder features.}
+\label{tab:seed_results}
+\small
+\sisetup{table-format=1.6, round-mode=places, round-precision=6}
+\begin{tabular}{@{}ccSSSSS@{}}
+\toprule
+Seed & Arm & {Price} & {Elevation} & {Surplus} & {Rank 0} & {Rank 1} \\
+\midrule
+01 & B & 1.497102 & 0.053323 & 1.157867 & 1.276308 & 1.237626 \\
+01 & A & 1.488946 & 0.035278 & 1.159020 & 1.418177 & 1.386605 \\
+02 & B & 1.481101 & 0.017922 & 1.159558 & 1.218294 & 1.241206 \\
+02 & A & 1.476651 & 0.008077 & 1.160178 & 1.547627 & 1.522354 \\
+03 & B & 1.468815 & -0.009260 & 1.161126 & 1.229325 & 1.311140 \\
+03 & A & 1.458835 & -0.031339 & 1.162020 & 1.328914 & 1.342101 \\
+04 & B & 1.479467 & 0.014307 & 1.160148 & 1.254956 & 1.291669 \\
+04 & A & 1.477020 & 0.008893 & 1.160382 & 1.232180 & 1.275160 \\
+05 & B & 1.509558 & 0.080881 & 1.155365 & 1.281766 & 1.237738 \\
+05 & A & 1.466939 & -0.013408 & 1.161483 & 1.331038 & 1.422554 \\
+06 & B & 1.461530 & -0.025377 & 1.160801 & 1.259499 & 1.229360 \\
+06 & A & 1.487097 & 0.031188 & 1.159354 & 1.293448 & 1.355741 \\
+07 & B & 1.483384 & 0.022973 & 1.159627 & 1.265380 & 1.228610 \\
+07 & A & 1.493508 & 0.045372 & 1.158365 & 1.280998 & 1.314625 \\
+08 & B & 1.463500 & -0.021018 & 1.161653 & 1.342083 & 1.293155 \\
+08 & A & 1.493939 & 0.046324 & 1.157274 & 1.310864 & 1.304309 \\
+09 & B & 1.474509 & 0.003338 & 1.159803 & 1.280268 & 1.268246 \\
+09 & A & 1.491027 & 0.039883 & 1.158652 & 1.291892 & 1.254833 \\
+10 & B & 1.479070 & 0.013430 & 1.159930 & 1.335473 & 1.356627 \\
+10 & A & 1.480958 & 0.017607 & 1.159871 & 1.351331 & 1.357494 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Between-seed price standard deviations are $0.014713$ for B and $0.011766$ for A. Elevation standard deviations are $0.032551$ and $0.026032$. Each run records 100 diagnostic evaluations with 16 episodes each; the requested $10{,}000$-interaction checkpoint spacing is rounded to rollout boundaries, starting at $12{,}288$ interactions. Final outcomes use 64 separate evaluation episodes, and both conditions share seed identifiers and evaluation-stream construction. A mean near the Nash reference does not rule out asymmetry, variation across time, or isolated profitable price cuts. Negative elevation is retained as a valid measured outcome rather than truncated to zero.
+
+Effective feature rank is defined as the exponential Shannon entropy of the normalized eigenvalues of the centered feature covariance matrix. These features are the post-projection, time-augmented representations after $\tanh$ and layer normalization rather than raw GRU hidden states. The reported effective-rank columns are descriptive diagnostics: they do not measure monitoring quality, whether the two firms learned identical representations, or whether a retaliatory punishment rule was encoded. Although the action-independent ablation raises effective rank (from $1.274335$ to $1.338647$ for firm 0 and from $1.269538$ to $1.353578$ for firm 1), it simultaneously changes the marginal input distribution of the public reports. Neither harmful representation collapse under informative monitoring nor a causal effect of feature rank on pricing follows from this comparison.
+
+All 20 rows are included in the reported comparison. A final 64-episode estimate differs slightly from the last 16-episode learning-curve estimate because their evaluation streams differ. The two quantities should not be silently substituted for one another.
+
+%% ============================================================
+\section{Statistical Estimands and Uncertainty}
+%% ============================================================
+
+Let $Y_s^B$ and $Y_s^A$ denote final outcomes for paired training seed $s$. We estimate the mean channel-replacement effect as
+\[
+\hat{\Delta} = \frac{1}{10}\sum_{s=1}^{10}(Y_s^A - Y_s^B).
+\]
+Each bootstrap draw resamples ten paired seed indices with replacement. We report the 2.5th and 97.5th percentiles from \num{2000} draws using NumPy \texttt{default\_rng}, seed 20260920. Whole-seed resampling also gives pointwise learning-curve bands. Intervals condition on the posterior, simulator, hyperparameters, and evaluation protocol; they are not simultaneous bands.
+
+For the counterfactual price-cut audits, we intervene on either firm ($0$ or $1$) at period $t_0\in\{64, 256\}$ using normalized action cuts of $0.1$ or $0.3$, giving eight probe types per seed. Because the action-to-price mapping has slope $0.75$, these normalized cuts correspond to unclipped price reductions of $0.075$ and $0.225$. Each probe uses 128 paired rollouts sharing the episode's posterior draw $\theta$ and Gaussian innovations $\varepsilon_t$; after the single forced cut at $t_0$, both agents return to their frozen deterministic policies through period $511$. We record both the signed sum of the rival impulse response $\Delta p_t^{\mathrm{rival}}$ after impact and the sum of the negative parts of its mean path (a descriptive downward-response area, not a structural measure of punishment). Similarly, the discounted continuation gain $\Delta\pi^{\mathrm{cont}}$ includes both firms' subsequent price adjustments and does not isolate the rival's causal contribution alone. In seed-level summaries, we average probe types within each seed before resampling seeds: cut-specific means average four probe types per seed, while overall rival-response area averages all eight. Seeds receive equal weight; the 128 rollout repetitions and four within-cut probe types are not independent training replications.
+
+\begin{table}[t]
+\centering
+\caption{Seed-bootstrap intervals for cut-specific full gain and its continuation component. Intervals are pointwise and unadjusted.}
+\label{tab:bootstrap_ci}
+\small
+\sisetup{table-format=-1.6}
+\begin{tabular}{@{}cc l SSS@{}}
+\toprule
+Arm & Cut & Quantity & {Mean} & {Lower 95\%} & {Upper 95\%} \\
+\midrule
+B & 0.1 & Full gain      & -0.005192 & -0.005855 & -0.004542 \\
+B & 0.1 & Continuation   & -0.000005 & -0.000010 & -0.000001 \\
+B & 0.3 & Full gain      & -0.051322 & -0.053372 & -0.049286 \\
+B & 0.3 & Continuation   & -0.000005 & -0.000010 & -0.000001 \\
+A & 0.1 & Full gain      & -0.004800 & -0.005393 & -0.004343 \\
+A & 0.1 & Continuation   &  0.000000 &  0.000000 &  0.000000 \\
+A & 0.3 & Full gain      & -0.050273 & -0.052023 & -0.048937 \\
+A & 0.3 & Continuation   &  0.000000 &  0.000000 &  0.000000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Conditional Intervals in the Complete Probe Tables}
+
+Each individual probe file also records a \num{1000}-resample bootstrap interval for the mean across its 128 paired rollouts. The bootstrap generator is initialized with the audit seed plus \num{54321}. Tables~\ref{tab:probe_B01}--\ref{tab:probe_A03} report those stored mean intervals. Their interpretation is conditional on one trained policy pair. The separately stored rollout quantiles named \texttt{deviation\_gain\_q025} and \texttt{deviation\_gain\_q975} are not confidence limits for a mean and are not used in those tables.
+
+In Tables~\ref{tab:probe_B01}--\ref{tab:probe_A03}, seed suffixes 01--10 identify 20261001--20261010; $t$ is intervention time. Immediate denotes impact gain; $G$ includes the remaining episode. Area sums the rival's mean price response after impact, in price-period units. Zeros are rounded except exact action-independent responses. Lower and upper limits are unadjusted conditional mean intervals.
+
+Within-seed probes share policies and random-stream construction. Fixed diagnostic streams across checkpoints likewise do not create independent observations. The 100 checkpoints cannot be treated as 100 independent training samples.
+
+\subsection{What an Unresolved Difference Means}
+
+The price-elevation interval includes zero and effects of either sign. Without a tested equivalence margin, this does not establish equivalence. The four positive conditional small-cut means are descriptive, not multiplicity-adjusted discoveries. Reporting both averages and individual probes preserves this heterogeneity.
+
+%% ============================================================
+\section{Complete Probe Tables}
+%% ============================================================
+
+% Helper command for probe tables to reduce repetition
+\newcommand{\probetable}[4]{%
+\begin{longtable}{@{}cccSSSSr@{}}
+\caption{#1 \label{#2}} \\
+\toprule
+Seed & Firm & $t$ & {Immediate} & {$G$} & {Lower 95\%} & {Upper 95\%} & {Area} \\
+\midrule
+\endfirsthead
+\multicolumn{8}{c}{\tablename\ \thetable{} -- continued} \\
+\toprule
+Seed & Firm & $t$ & {Immediate} & {$G$} & {Lower 95\%} & {Upper 95\%} & {Area} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+#3
+\end{longtable}
+\vspace{-1em}
+\footnotesize{#4}
+}
+
+\sisetup{table-format=-1.6, table-number-alignment=center}
+
+\probetable
+{Normalized cut 0.1 under informative baseline. Unclipped price cut 0.075. Each row uses 128 paired rollouts.}
+{tab:probe_B01}
+{
+01 & 0 &  64 &  0.000613 &  0.000573 &  0.000557 &  0.000591 & -9.91e-05 \\
+01 & 0 & 256 & -0.001242 & -0.001259 & -0.001284 & -0.001234 & -4.23e-05 \\
+01 & 1 &  64 & -0.007589 & -0.007606 & -0.007633 & -0.007581 & -3.63e-05 \\
+01 & 1 & 256 & -0.007374 & -0.007381 & -0.007422 & -0.007339 & -1.54e-05 \\
+02 & 0 &  64 & -0.008006 & -0.008006 & -0.008023 & -0.007989 & 1.28e-07 \\
+02 & 0 & 256 & -0.009356 & -0.009356 & -0.009381 & -0.009328 & 0.00e+00 \\
+02 & 1 &  64 & -0.000680 & -0.000680 & -0.000701 & -0.000658 & -1.36e-07 \\
+02 & 1 & 256 & -0.001313 & -0.001313 & -0.001346 & -0.001279 & 0.00e+00 \\
+03 & 0 &  64 & -0.008061 & -0.008061 & -0.008097 & -0.008025 & 0.00e+00 \\
+03 & 0 & 256 & -0.008658 & -0.008658 & -0.008711 & -0.008608 & 0.00e+00 \\
+03 & 1 &  64 & -0.001741 & -0.001741 & -0.001772 & -0.001713 & 0.00e+00 \\
+03 & 1 & 256 & -0.003536 & -0.003536 & -0.003580 & -0.003492 & 0.00e+00 \\
+04 & 0 &  64 & -0.005577 & -0.005598 & -0.005633 & -0.005559 & -5.29e-05 \\
+04 & 0 & 256 & -0.005955 & -0.005958 & -0.006023 & -0.005893 & -6.00e-06 \\
+04 & 1 &  64 & -0.004645 & -0.004677 & -0.004688 & -0.004665 & -8.08e-05 \\
+04 & 1 & 256 & -0.005590 & -0.005594 & -0.005611 & -0.005577 & -9.70e-06 \\
+05 & 0 &  64 &  0.003834 &  0.003846 &  0.003797 &  0.003899 & 9.39e-06 \\
+05 & 0 & 256 &  0.002990 &  0.002990 &  0.002913 &  0.003067 & 1.04e-07 \\
+05 & 1 &  64 & -0.009665 & -0.009695 & -0.009729 & -0.009663 & -7.65e-05 \\
+05 & 1 & 256 & -0.010022 & -0.010022 & -0.010074 & -0.009969 & -4.99e-07 \\
+06 & 0 &  64 & -0.007118 & -0.007118 & -0.007153 & -0.007084 & 0.00e+00 \\
+06 & 0 & 256 & -0.005592 & -0.005592 & -0.005639 & -0.005542 & 0.00e+00 \\
+06 & 1 &  64 & -0.007011 & -0.007011 & -0.007035 & -0.006985 & 0.00e+00 \\
+06 & 1 & 256 & -0.009308 & -0.009308 & -0.009348 & -0.009268 & 0.00e+00 \\
+07 & 0 &  64 & -0.005305 & -0.005306 & -0.005323 & -0.005289 & -2.89e-06 \\
+07 & 0 & 256 & -0.006025 & -0.006025 & -0.006062 & -0.005991 & 0.00e+00 \\
+07 & 1 &  64 & -0.005606 & -0.005605 & -0.005623 & -0.005586 & 1.56e-06 \\
+07 & 1 & 256 & -0.005480 & -0.005480 & -0.005509 & -0.005445 & 0.00e+00 \\
+08 & 0 &  64 & -0.006527 & -0.006527 & -0.006552 & -0.006503 & -1.20e-08 \\
+08 & 0 & 256 & -0.006315 & -0.006315 & -0.006356 & -0.006275 & 0.00e+00 \\
+08 & 1 &  64 & -0.004186 & -0.004186 & -0.004196 & -0.004176 & -3.58e-08 \\
+08 & 1 & 256 & -0.006705 & -0.006705 & -0.006722 & -0.006688 & 0.00e+00 \\
+09 & 0 &  64 & -0.007498 & -0.007528 & -0.007579 & -0.007475 & -7.13e-05 \\
+09 & 0 & 256 & -0.010152 & -0.010152 & -0.010233 & -0.010072 & 0.00e+00 \\
+09 & 1 &  64 & -0.000496 & -0.000519 & -0.000553 & -0.000488 & -6.26e-05 \\
+09 & 1 & 256 & -0.001464 & -0.001464 & -0.001514 & -0.001412 & 0.00e+00 \\
+10 & 0 &  64 & -0.008380 & -0.008380 & -0.008424 & -0.008331 & 0.00e+00 \\
+10 & 0 & 256 & -0.008557 & -0.008557 & -0.008640 & -0.008481 & 0.00e+00 \\
+10 & 1 &  64 & -0.001241 & -0.001241 & -0.001316 & -0.001172 & 0.00e+00 \\
+10 & 1 & 256 & -0.002912 & -0.002912 & -0.003033 & -0.002792 & 0.00e+00 \\
+}
+{Column definitions and conditional-interval limitations appear in Section~E.1.}
+
+\probetable
+{Normalized cut 0.3 under informative baseline. Unclipped price cut 0.225. Each row uses 128 paired rollouts.}
+{tab:probe_B03}
+{
+01 & 0 &  64 & -0.032969 & -0.033009 & -0.033065 & -0.032950 & -9.91e-05 \\
+01 & 0 & 256 & -0.038903 & -0.038920 & -0.039002 & -0.038841 & -4.23e-05 \\
+01 & 1 &  64 & -0.059502 & -0.059519 & -0.059600 & -0.059442 & -3.63e-05 \\
+01 & 1 & 256 & -0.058640 & -0.058647 & -0.058773 & -0.058517 & -1.54e-05 \\
+02 & 0 &  64 & -0.060599 & -0.060599 & -0.060651 & -0.060547 & 1.28e-07 \\
+02 & 0 & 256 & -0.064548 & -0.064548 & -0.064624 & -0.064463 & 0.00e+00 \\
+02 & 1 &  64 & -0.037016 & -0.037016 & -0.037085 & -0.036946 & -1.36e-07 \\
+02 & 1 & 256 & -0.038793 & -0.038793 & -0.038902 & -0.038682 & 0.00e+00 \\
+03 & 0 &  64 & -0.060643 & -0.060643 & -0.060751 & -0.060532 & 0.00e+00 \\
+03 & 0 & 256 & -0.062227 & -0.062227 & -0.062388 & -0.062077 & 0.00e+00 \\
+03 & 1 &  64 & -0.040365 & -0.040365 & -0.040462 & -0.040275 & 0.00e+00 \\
+03 & 1 & 256 & -0.045899 & -0.045899 & -0.046042 & -0.045763 & 0.00e+00 \\
+04 & 0 &  64 & -0.052774 & -0.052795 & -0.052906 & -0.052672 & -5.29e-05 \\
+04 & 0 & 256 & -0.053804 & -0.053807 & -0.054007 & -0.053610 & -6.00e-06 \\
+04 & 1 &  64 & -0.049789 & -0.049821 & -0.049857 & -0.049781 & -8.08e-05 \\
+04 & 1 & 256 & -0.052638 & -0.052642 & -0.052691 & -0.052595 & -9.70e-06 \\
+05 & 0 &  64 & -0.022114 & -0.022102 & -0.022272 & -0.021922 & 9.42e-06 \\
+05 & 0 & 256 & -0.024806 & -0.024806 & -0.025070 & -0.024542 & 1.04e-07 \\
+05 & 1 &  64 & -0.065988 & -0.066019 & -0.066124 & -0.065919 & -7.65e-05 \\
+05 & 1 & 256 & -0.066949 & -0.066949 & -0.067109 & -0.066787 & -4.99e-07 \\
+06 & 0 &  64 & -0.057165 & -0.057165 & -0.057276 & -0.057060 & 0.00e+00 \\
+06 & 0 & 256 & -0.052186 & -0.052186 & -0.052337 & -0.052027 & 0.00e+00 \\
+06 & 1 &  64 & -0.056827 & -0.056827 & -0.056905 & -0.056744 & 0.00e+00 \\
+06 & 1 & 256 & -0.063946 & -0.063946 & -0.064068 & -0.063820 & 0.00e+00 \\
+07 & 0 &  64 & -0.051812 & -0.051813 & -0.051868 & -0.051758 & -2.89e-06 \\
+07 & 0 & 256 & -0.054033 & -0.054033 & -0.054148 & -0.053925 & 0.00e+00 \\
+07 & 1 &  64 & -0.052774 & -0.052774 & -0.052830 & -0.052714 & 1.56e-06 \\
+07 & 1 & 256 & -0.052291 & -0.052291 & -0.052384 & -0.052181 & 0.00e+00 \\
+08 & 0 &  64 & -0.055728 & -0.055728 & -0.055802 & -0.055653 & -1.20e-08 \\
+08 & 0 & 256 & -0.054756 & -0.054756 & -0.054884 & -0.054631 & 0.00e+00 \\
+08 & 1 &  64 & -0.048236 & -0.048236 & -0.048270 & -0.048203 & -3.58e-08 \\
+08 & 1 & 256 & -0.055997 & -0.055997 & -0.056054 & -0.055942 & 0.00e+00 \\
+09 & 0 &  64 & -0.059099 & -0.059129 & -0.059290 & -0.058963 & -7.13e-05 \\
+09 & 0 & 256 & -0.066888 & -0.066888 & -0.067128 & -0.066651 & 0.00e+00 \\
+09 & 1 &  64 & -0.036522 & -0.036544 & -0.036655 & -0.036442 & -6.26e-05 \\
+09 & 1 & 256 & -0.039136 & -0.039136 & -0.039300 & -0.038968 & 0.00e+00 \\
+10 & 0 &  64 & -0.061650 & -0.061650 & -0.061788 & -0.061499 & 0.00e+00 \\
+10 & 0 & 256 & -0.061991 & -0.061991 & -0.062252 & -0.061754 & 0.00e+00 \\
+10 & 1 &  64 & -0.038727 & -0.038727 & -0.038974 & -0.038503 & 0.00e+00 \\
+10 & 1 & 256 & -0.043956 & -0.043956 & -0.044347 & -0.043568 & 0.00e+00 \\
+}
+{Column definitions and conditional-interval limitations appear in Section~E.1.}
+
+\probetable
+{Normalized cut 0.1 under action-independent ablation. Unclipped price cut 0.075. Each row uses 128 paired rollouts.}
+{tab:probe_A01}
+{
+01 & 0 &  64 & -0.006554 & -0.006554 & -0.006598 & -0.006508 & 0.00e+00 \\
+01 & 0 & 256 & -0.006940 & -0.006940 & -0.007006 & -0.006874 & 0.00e+00 \\
+01 & 1 &  64 & -0.001709 & -0.001709 & -0.001766 & -0.001654 & 0.00e+00 \\
+01 & 1 & 256 & -0.002856 & -0.002856 & -0.002935 & -0.002775 & 0.00e+00 \\
+02 & 0 &  64 & -0.006968 & -0.006968 & -0.007066 & -0.006872 & 0.00e+00 \\
+02 & 0 & 256 & -0.008311 & -0.008311 & -0.008476 & -0.008139 & 0.00e+00 \\
+02 & 1 &  64 & -0.001395 & -0.001395 & -0.001506 & -0.001278 & 0.00e+00 \\
+02 & 1 & 256 & -0.002733 & -0.002733 & -0.002925 & -0.002550 & 0.00e+00 \\
+03 & 0 &  64 & -0.002885 & -0.002885 & -0.002902 & -0.002865 & 0.00e+00 \\
+03 & 0 & 256 & -0.005016 & -0.005016 & -0.005044 & -0.004988 & 0.00e+00 \\
+03 & 1 &  64 & -0.010193 & -0.010193 & -0.010288 & -0.010103 & 0.00e+00 \\
+03 & 1 & 256 & -0.009653 & -0.009653 & -0.009781 & -0.009525 & 0.00e+00 \\
+04 & 0 &  64 & -0.003106 & -0.003106 & -0.003117 & -0.003095 & 0.00e+00 \\
+04 & 0 & 256 & -0.005325 & -0.005325 & -0.005346 & -0.005303 & 0.00e+00 \\
+04 & 1 &  64 & -0.005326 & -0.005326 & -0.005348 & -0.005303 & 0.00e+00 \\
+04 & 1 & 256 & -0.005506 & -0.005506 & -0.005550 & -0.005464 & 0.00e+00 \\
+05 & 0 &  64 & -0.004346 & -0.004346 & -0.004374 & -0.004319 & 0.00e+00 \\
+05 & 0 & 256 & -0.005319 & -0.005319 & -0.005352 & -0.005283 & 0.00e+00 \\
+05 & 1 &  64 & -0.005744 & -0.005744 & -0.005758 & -0.005730 & 0.00e+00 \\
+05 & 1 & 256 & -0.007416 & -0.007416 & -0.007445 & -0.007383 & 0.00e+00 \\
+06 & 0 &  64 & -0.003714 & -0.003714 & -0.003759 & -0.003667 & 0.00e+00 \\
+06 & 0 & 256 & -0.004358 & -0.004358 & -0.004433 & -0.004278 & 0.00e+00 \\
+06 & 1 &  64 & -0.002690 & -0.002690 & -0.002718 & -0.002663 & 0.00e+00 \\
+06 & 1 & 256 & -0.004439 & -0.004439 & -0.004478 & -0.004396 & 0.00e+00 \\
+07 & 0 &  64 & -0.003969 & -0.003969 & -0.004037 & -0.003901 & 0.00e+00 \\
+07 & 0 & 256 & -0.003165 & -0.003165 & -0.003283 & -0.003038 & 0.00e+00 \\
+07 & 1 &  64 & -0.003615 & -0.003615 & -0.003674 & -0.003557 & 0.00e+00 \\
+07 & 1 & 256 & -0.005815 & -0.005815 & -0.005924 & -0.005725 & 0.00e+00 \\
+08 & 0 &  64 & -0.000468 & -0.000468 & -0.000531 & -0.000412 & 0.00e+00 \\
+08 & 0 & 256 &  0.000122 &  0.000122 &  0.000030 &  0.000219 & 0.00e+00 \\
+08 & 1 &  64 & -0.007390 & -0.007390 & -0.007417 & -0.007362 & 0.00e+00 \\
+08 & 1 & 256 & -0.009166 & -0.009166 & -0.009213 & -0.009120 & 0.00e+00 \\
+09 & 0 &  64 & -0.007326 & -0.007326 & -0.007358 & -0.007295 & 0.00e+00 \\
+09 & 0 & 256 & -0.007760 & -0.007760 & -0.007813 & -0.007705 & 0.00e+00 \\
+09 & 1 &  64 & -0.000717 & -0.000717 & -0.000728 & -0.000705 & 0.00e+00 \\
+09 & 1 & 256 & -0.001924 & -0.001924 & -0.001942 & -0.001906 & 0.00e+00 \\
+10 & 0 &  64 & -0.006716 & -0.006716 & -0.006791 & -0.006631 & 0.00e+00 \\
+10 & 0 & 256 & -0.007488 & -0.007488 & -0.007616 & -0.007368 & 0.00e+00 \\
+10 & 1 &  64 & -0.001349 & -0.001349 & -0.001423 & -0.001282 & 0.00e+00 \\
+10 & 1 & 256 & -0.002766 & -0.002766 & -0.002873 & -0.002654 & 0.00e+00 \\
+}
+{Column definitions and conditional-interval limitations appear in Section~E.1.}
+
+\probetable
+{Normalized cut 0.3 under action-independent ablation. Unclipped price cut 0.225. Each row uses 128 paired rollouts.}
+{tab:probe_A03}
+{
+01 & 0 &  64 & -0.056118 & -0.056118 & -0.056257 & -0.055972 & 0.00e+00 \\
+01 & 0 & 256 & -0.057140 & -0.057140 & -0.057347 & -0.056930 & 0.00e+00 \\
+01 & 1 &  64 & -0.040510 & -0.040510 & -0.040694 & -0.040329 & 0.00e+00 \\
+01 & 1 & 256 & -0.044039 & -0.044039 & -0.044295 & -0.043776 & 0.00e+00 \\
+02 & 0 &  64 & -0.057397 & -0.057397 & -0.057704 & -0.057098 & 0.00e+00 \\
+02 & 0 & 256 & -0.061263 & -0.061263 & -0.061778 & -0.060726 & 0.00e+00 \\
+02 & 1 &  64 & -0.039447 & -0.039447 & -0.039814 & -0.039062 & 0.00e+00 \\
+02 & 1 & 256 & -0.043422 & -0.043422 & -0.044051 & -0.042825 & 0.00e+00 \\
+03 & 0 &  64 & -0.043619 & -0.043619 & -0.043688 & -0.043543 & 0.00e+00 \\
+03 & 0 & 256 & -0.050355 & -0.050355 & -0.050460 & -0.050253 & 0.00e+00 \\
+03 & 1 &  64 & -0.066864 & -0.066864 & -0.067150 & -0.066595 & 0.00e+00 \\
+03 & 1 & 256 & -0.065033 & -0.065033 & -0.065421 & -0.064651 & 0.00e+00 \\
+04 & 0 &  64 & -0.045067 & -0.045067 & -0.045105 & -0.045031 & 0.00e+00 \\
+04 & 0 & 256 & -0.051887 & -0.051887 & -0.051956 & -0.051816 & 0.00e+00 \\
+04 & 1 &  64 & -0.052212 & -0.052212 & -0.052282 & -0.052141 & 0.00e+00 \\
+04 & 1 & 256 & -0.052465 & -0.052465 & -0.052601 & -0.052335 & 0.00e+00 \\
+05 & 0 &  64 & -0.048844 & -0.048844 & -0.048928 & -0.048761 & 0.00e+00 \\
+05 & 0 & 256 & -0.051607 & -0.051607 & -0.051705 & -0.051502 & 0.00e+00 \\
+05 & 1 &  64 & -0.053324 & -0.053324 & -0.053366 & -0.053283 & 0.00e+00 \\
+05 & 1 & 256 & -0.058280 & -0.058280 & -0.058365 & -0.058184 & 0.00e+00 \\
+06 & 0 &  64 & -0.047331 & -0.047331 & -0.047471 & -0.047183 & 0.00e+00 \\
+06 & 0 & 256 & -0.049064 & -0.049064 & -0.049295 & -0.048818 & 0.00e+00 \\
+06 & 1 &  64 & -0.044019 & -0.044019 & -0.044108 & -0.043932 & 0.00e+00 \\
+06 & 1 & 256 & -0.049324 & -0.049324 & -0.049447 & -0.049195 & 0.00e+00 \\
+07 & 0 &  64 & -0.047984 & -0.047984 & -0.048202 & -0.047770 & 0.00e+00 \\
+07 & 0 & 256 & -0.045168 & -0.045168 & -0.045549 & -0.044759 & 0.00e+00 \\
+07 & 1 &  64 & -0.046842 & -0.046842 & -0.047032 & -0.046656 & 0.00e+00 \\
+07 & 1 & 256 & -0.053689 & -0.053689 & -0.054034 & -0.053398 & 0.00e+00 \\
+08 & 0 &  64 & -0.036450 & -0.036450 & -0.036653 & -0.036267 & 0.00e+00 \\
+08 & 0 & 256 & -0.034251 & -0.034251 & -0.034556 & -0.033933 & 0.00e+00 \\
+08 & 1 &  64 & -0.058781 & -0.058781 & -0.058867 & -0.058688 & 0.00e+00 \\
+08 & 1 & 256 & -0.064135 & -0.064135 & -0.064281 & -0.063989 & 0.00e+00 \\
+09 & 0 &  64 & -0.058559 & -0.058559 & -0.058655 & -0.058464 & 0.00e+00 \\
+09 & 0 & 256 & -0.059720 & -0.059720 & -0.059881 & -0.059553 & 0.00e+00 \\
+09 & 1 &  64 & -0.037251 & -0.037251 & -0.037291 & -0.037208 & 0.00e+00 \\
+09 & 1 & 256 & -0.040991 & -0.040991 & -0.041055 & -0.040926 & 0.00e+00 \\
+10 & 0 &  64 & -0.056647 & -0.056647 & -0.056881 & -0.056381 & 0.00e+00 \\
+10 & 0 & 256 & -0.058798 & -0.058798 & -0.059196 & -0.058423 & 0.00e+00 \\
+10 & 1 &  64 & -0.039348 & -0.039348 & -0.039594 & -0.039123 & 0.00e+00 \\
+10 & 1 & 256 & -0.043667 & -0.043667 & -0.044018 & -0.043295 & 0.00e+00 \\
+}
+{Column definitions and conditional-interval limitations appear in Section~E.1.}
+
+%% ============================================================
+\section{Reproducibility and Computation Record}
+%% ============================================================
+
+\subsection{Provenance of the Reported Outputs}
+
+The results archive contains complete final PPO checkpoints, job configurations, learning curves, probe summaries, and suite metadata. The archived Python source hashes and all 20 final checkpoint hashes were checked against the manifest and job files when preparing the main text. The executable binary itself is not distributed in this results archive; its recorded hash alone does not establish that a newly compiled binary is byte-identical.
+
+The recorded environment uses Python 3.13.15, NumPy 2.1.3, PyTorch 2.11.0+cu128, Gymnasium 1.3.0, and device \texttt{cuda}. These are archived versions, not a new compatibility guarantee.
+
+\begin{table}[t]
+\centering
+\caption{Archived cryptographic hashes for reproducibility verification.}
+\label{tab:hashes}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+Component & SHA256 \\
+\midrule
+Posterior draws & \texttt{a2cd4f268b3edf0d...202d1b95} \\
+Native extension & \texttt{8c1fe82a4830d09e...ef882780} \\
+PPO training source & \texttt{12ffcf180b6fc899...662d3f15} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The diagnostic gate records maximum rank-normalized split $\hat{R} = 1.008945$ and minimum bulk/tail ESS $= 606.86$, satisfying the software convergence gates of $1.01$ and $400$ \citep{vehtari2021rank}. Passing these thresholds addresses MCMC sampling quality, not Gaussianity of real-world monitoring errors or external market calibration. This supplement does not reconstruct missing likelihood inputs or invent posterior moments from those two statistics. Independent calibration replication requires the original labeled observations, observation-scale settings, sampling configuration, and retained draws matching the recorded posterior hash.
+
+\subsection{Interaction Accounting}
+
+\begin{table}[t]
+\centering
+\caption{Recorded interaction counts across all completed jobs.}
+\label{tab:interactions}
+\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Component & Per Job & Across 20 Jobs \\
+\midrule
+Training              & \num{1000000}  & \num{20000000} \\
+Training diagnostics  & \num{819200}   & \num{16384000} \\
+Trainer final eval.   & \num{8192}     & \num{163840} \\
+Suite final eval.     & \num{32768}    & \num{655360} \\
+Paired deviation audit & \num{1048576} & \num{20971520} \\
+\midrule
+Total recorded        & \num{2908736}  & \num{58174720} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Each audit type costs \num{131072} transitions, including the pre-intervention prefix in both branches. Eight types give the reported \num{1048576}. One market transition contains both firms' actions; it is not two separate environment interactions. Recorded completed-job times sum to $21.978$ hours for baseline and $22.079$ hours for ablation ($44.06$ hours total). Hardware-specific runtime comparisons require additional telemetry beyond these job totals.
+
+Three previous-attempt records concern baseline seed 20261010 and ablated seeds 20261008 and 20261009. All are marked running, not failed, in the archived records. Their filenames contain \texttt{previous\_failure}, but the records do not establish a numerical training failure or its cause. All three final jobs completed, and unrecorded interrupted work is excluded from the interaction and runtime totals above. Finally, the broader research plan also scheduled Soft Actor-Critic (SAC) conditions, but no incomplete SAC comparison enters this study; because the PPO-only scope and its interpretation were finalized after inspecting completed runs, the manuscript is not a preregistered confirmatory test of a null effect.
+
+%% ============================================================
+\section{Detailed Limitations, Reproduction Steps, and Extensions}
+%% ============================================================
+
+\subsection{Expanded Discussion of Methodological and Structural Limitations}
+
+Several structural boundaries govern what the analytical benchmark and the PPO audit can and cannot establish:
+\begin{enumerate}
+\item \textbf{Conditional connection between the infinite-horizon benchmark and finite-horizon PPO:} The analytical trigger benchmark in Section~A assumes an infinite horizon with contemporaneous binary threshold signals, whereas the PPO environment passes continuous, two-period-averaged, one-step-delayed reports to a 32-step GRU over a known finite horizon of $T=512$ periods with normalized time included in the actor input and zero terminal value bootstrap. In a complete-information finite repeated game with a unique stage-game Nash equilibrium, backward induction selects stage-equilibrium play in every period. We do not invoke backward induction as a formal convergence theorem for simultaneous gradient-based neural learners under imperfect monitoring, but we emphasize that a known terminal date and observable remaining time fundamentally alter the dynamic learning problem. The near-Nash outcomes in our PPO runs neither refute the infinite-horizon trigger theorem nor prove that neural learners cannot collude in continuing tasks.
+\item \textbf{Input distribution confound:} Replacing the informative channel with $r_{t+1}\sim\mathcal{N}(1.6,0.4^2)$ eliminates action dependence but also changes the marginal mean, variance, and autocorrelation of the report stream. Separating pure information-content effects from input-scale and architecture effects requires moment-matched action-independent placebo channels, history-length controls, and nonrecurrent (MLP) baselines.
+\item \textbf{Signal saturation near Nash:} Because Equation~(4) clamps $m_t$ at $\theta_{\mathrm{lo}}$ when $\min(p_{1,t},p_{2,t})\leq p^{\mathrm{N}}$, price cuts from baseline prices near $p^{\mathrm{N}}$ can saturate the latent signal mean. Nonsaturating signal maps and smaller, adaptive price cuts are needed before interpreting small impulse responses as insensitivity to economically relevant departures.
+\item \textbf{Probe coverage and positive deviations:} Our finite probe family tests two downward cut sizes at two intervention periods. Among the 40 small-cut probes per condition, 3 of 40 under informative monitoring (across two seeds, maximum conditional mean gain $0.003846$) and 1 of 40 under action-independent monitoring (gain $0.000122$) exhibit positive conditional mean gains whose within-policy bootstrap intervals exclude zero individually (unadjusted for multiplicity across probes). Testing upward price changes, best-response searches, multistep deviations, and alternative histories could uncover additional profitable deviations.
+\item \textbf{Missing collusive positive control:} Proposition~1 proves that our action-independent channel serves as an exact zero-response negative control ($\Delta p_t^{\mathrm{rival}}=0$ and $\Delta\pi^{\mathrm{cont}}=0$), but a negative control does not establish statistical power (sensitivity). Validating the audit as a detector with known sensitivity requires evaluating it on a known collusive positive control---such as an explicitly programmed noisy trigger policy or a verified collusive learner---that generates the predicted tradeoff between positive current deviation gains ($g>0$) and larger discounted continuation losses.
+\item \textbf{Model scope and welfare accounting:} All inference is conditional on one retained posterior, one stationary logit demand specification, and ten independent training seeds. A confidence interval spanning zero ($[-0.0241,\,0.0288]$ for price elevation difference) reflects finite-sample uncertainty and is not proof of zero effect. In addition, total surplus in main-text Equation~(3), $\mathrm{TS}(p_i,p_j)=(v-c)[q_i(p_i,p_j)+q_j(p_i,p_j)]$, is bounded above by $v-c=1$, whereas Table~1 and Table~\ref{tab:seed_results} report archived simulator values around $1.1596$, which match the standard logit social welfare formula $\mathrm{CS}(p_1,p_2)+\pi_1+\pi_2$ with $\mathrm{CS}(p_1,p_2)=\mu\log\bigl(1+\exp((v-p_1)/\mu)+\exp((v-p_2)/\mu)\bigr)$.
+\end{enumerate}
+
+\subsection{Reproduce the Reported PPO Scope}
+
+Use the archived source and build instructions. Supply the original \texttt{posterior\_draws.csv} and matching \texttt{posterior\_summary.csv}, verify the posterior hash, and run \texttt{require\_converged}. Preserve joint posterior rows; independent marginal sampling changes the training distribution.
+
+Copy \texttt{experiments/research.json}, retaining \texttt{ppo\_baseline}, \texttt{ppo\_ablated}, and their paired comparison. Keep seeds, evaluation counts, and audit settings unchanged. Save as \texttt{experiments/ppo\_research.json}. The original suite also scheduled SAC; this PPO-only recipe changes plan identity and requires a new output directory.
+
+Run \texttt{python -m acrl.experiment\_suite} with \texttt{-\/-plan experiments/ppo\_research.json}, \texttt{-\/-posterior results/mcmc/posterior\_draws.csv}, \texttt{-\/-output results/ppo\_reproduction}, and \texttt{-\/-device cuda}. CPU changes run identity and may change floating-point behavior. Exact replication across hardware or package versions requires verification.
+
+The \texttt{-\/-resume} option reuses validated completed jobs with matching identities. It does not continue an interrupted optimizer state. A progress policy checkpoint alone does not restore all optimizer and random-generator states. Preserve the prior archive and identify restarted jobs.
+
+Check job statuses, hashes, and finite metrics. Recompute seed summaries from \texttt{job.json}, curves from \texttt{policy.curve.csv}, and probes from \texttt{audit\_probes.json} using Section~E's conventions. Exclude unfinished SAC runs.
+
+\subsection{Extensions That Would Strengthen the Evidence}
+
+The following are not completed experiments. They define limits of the conclusions. A Calvano-style Q-learning replication provides an external benchmark and can serve as an empirical positive control if its enforcement is independently verified. A designed trigger strategy supplies a control with a known current-gain/continuation-loss tradeoff.
+
+\begin{table}[t]
+\centering
+\caption{Unresolved extensions and the questions they would address.}
+\label{tab:extensions}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+Additional Experiment & Question It Would Resolve \\
+\midrule
+Known collusive trigger as positive control & Does the audit detect a designed gain/loss tradeoff? \\
+Calvano-style tabular Q-learning benchmark & Does the implementation reproduce prior results? \\
+Matched-moment action-independent reports & Is the effect due to information or input scale? \\
+Nonsaturating signal maps and smaller cuts & Does saturation near Nash conceal sensitivity? \\
+Recurrent versus memoryless policies & Does history processing change enforcement? \\
+Adaptive and multistep deviations & Do policies admit profits outside fixed probes? \\
+Continuing-task and horizon sensitivity & How much do terminal date and finite memory matter? \\
+Gaussian-noise sweep with fixed trigger & Does the comparative static hold empirically? \\
+Alternative learners and market primitives & How far do PPO findings generalize? \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%% ============================================================
+%% References (부록에서만 인용된 문헌 추가)
+%% ============================================================
+
+\bibliographystyle{iclr2027_conference}
+\begin{thebibliography}{9}
+
+\bibitem[Abreu et~al.(1990)]{abreu1990toward}
+D.~Abreu, D.~Pearce, and E.~Stacchetti.
+\newblock Toward a theory of discounted repeated games with imperfect
+  monitoring.
+\newblock \emph{Econometrica}, 58(5):1041--1063, 1990.
+
+\bibitem[Calvano et~al.(2020)]{calvano2020artificial}
+E.~Calvano, G.~Calzolari, V.~Denicol\`o, and S.~Pastorello.
+\newblock Artificial intelligence, algorithmic pricing, and collusion.
+\newblock \emph{American Economic Review}, 110(10):3267--3297, 2020.
+
+\bibitem[Calvano et~al.(2021)]{calvano2021algorithmic}
+E.~Calvano, G.~Calzolari, V.~Denicol\`o, and S.~Pastorello.
+\newblock Algorithmic collusion with imperfect monitoring.
+\newblock \emph{International Journal of Industrial Organization}, 79:102712,
+  2021.
+
+\bibitem[Cho et~al.(2014)]{cho2014gru}
+K.~Cho, B.~van Merri\"enboer, C.~Gulcehre, D.~Bahdanau, F.~Bougares, H.~Schwenk, and Y.~Bengio.
+\newblock Learning phrase representations using RNN encoder--decoder for statistical machine translation.
+\newblock \emph{arXiv preprint arXiv:1406.1078}, 2014.
+
+\bibitem[Deng et~al.(2025)]{deng2025exploring}
+S.~Deng, M.~Schiffer, and M.~Bichler.
+\newblock Exploring competitive and collusive behaviors in algorithmic
+  pricing with deep reinforcement learning.
+\newblock \emph{arXiv preprint arXiv:2503.11270}, 2025.
+
+\bibitem[Fudenberg et~al.(1994)]{fudenberg1994folk}
+D.~Fudenberg, D.~K.~Levine, and E.~Maskin.
+\newblock The folk theorem with imperfect public information.
+\newblock \emph{Econometrica}, 62(5):997--1039, 1994.
+
+\bibitem[Green and Porter(1984)]{green1984noncooperative}
+E.~J.~Green and R.~H.~Porter.
+\newblock Noncooperative collusion under imperfect price information.
+\newblock \emph{Econometrica}, 52(1):87--100, 1984.
+
+\bibitem[Schulman et~al.(2017)]{schulman2017proximal}
+J.~Schulman, F.~Wolski, P.~Dhariwal, A.~Radford, and O.~Klimov.
+\newblock Proximal policy optimization algorithms.
+\newblock \emph{arXiv preprint arXiv:1707.06347}, 2017.
+
+\bibitem[Vehtari et~al.(2021)]{vehtari2021rank}
+A.~Vehtari, A.~Gelman, D.~Simpson, B.~Carpenter, and P.-C.~B\"urkner.
+\newblock Rank-normalization, folding, and localization: An improved
+  $\hat{R}$ for assessing convergence of {MCMC}.
+\newblock \emph{Bayesian Analysis}, 16(2):667--718, 2021.
+
+\end{thebibliography}
+
+\end{document}

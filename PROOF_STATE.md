@@ -1,5 +1,6 @@
 # PROOF_STATE.md — Current Verification State
 
-- **Last Completed Step:** Step 6 (Final Step) — Completed `THEORY_VERIFICATION_REPORT.md`, cross-document consistency audit between `main_corrected.tex` and `supplement_corrected.tex`, and final updates to `PROOF_PROGRESS.md` and `PROOF_STATE.md`.
-- **Current Status:** ALL STEPS COMPLETED (Steps 1–6 of 6).
-- **Exact Next Action:** None. Verification, LaTeX source corrections, PDF compilations, and reporting are complete.
+- **Latest audit:** 2026-11-12, base revision `b119bdce823da664f1fdc577efa82241e1042631`; see [current report](referee/2026-11-12/report.md).
+- **Completed scope:** Mathematical review under explicit assumptions, corrections to both manuscripts, archive postprocessing of 20 PPO jobs and 160 probes, 20 final checkpoint hash checks, regenerated figures, and PDF/source consistency checks.
+- **Status:** Confirmed manuscript errors corrected; full implementation/training/calibration replication remains unavailable.
+- **Required next inputs:** Original Python/native simulator sources and build materials, posterior/calibration data, and individual-rollout data. In particular, simulator welfare semantics and the `added_sigma` combination rule remain unverified. Earlier “all steps completed” referred to the prior review workflow, not a certification of these missing inputs.

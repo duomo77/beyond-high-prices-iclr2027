@@ -10,6 +10,7 @@
 \usepackage{natbib}
 \usepackage{hyperref}
 \usepackage{longtable}
+\usepackage{float}
 \usepackage{siunitx}
 \usepackage{caption}
 
@@ -38,7 +39,7 @@ This supplement gives extended proofs, the executed PPO configuration, and all 1
 
 \subsection{The Value Difference and the Threshold}
 
-Consider the main text's stationary repeated game with absorbing, credible punishment. Write bounded cooperative, punishment, and specified one-period deviation payoffs as $\pi^C$, $\pi^P$, and $\pi^D$. Let $g = \pi^D - \pi^C$ and $\Delta V = \pi^C - \pi^P$. Assume $g > 0$ and $\Delta V > 0$. The signal depends on current actions; the deviator subsequently follows the prescribed automaton.
+Consider the main text's stationary repeated game with absorbing, credible punishment. Write bounded cooperative, punishment, and specified one-period deviation payoffs as $\pi^C$, $\pi^P$, and $\pi^D$. Let $g = \pi^D - \pi^C$ and $\Delta V = \pi^C - \pi^P$. Assume $g > 0$, $\Delta V > 0$, $0\leq\alpha<\beta\leq1$, and $0\leq\delta<1$. The signal depends on current actions; the deviator subsequently follows the prescribed automaton.
 
 Subtract the punishment Bellman equation from the cooperative equation. Both values are evaluated before the current action. This timing gives
 \[
@@ -52,11 +53,11 @@ Multiplying by the positive denominator preserves the inequality. The deviation 
 \[
 \delta \geq \frac{g}{g(1 - \alpha) + (\beta - \alpha)\Delta V}.
 \]
-Division yields $\delta^*$. The strict feasibility condition $\delta^* < 1$ is equivalent to $(\beta - \alpha)\Delta V > \alpha g$. Equality permits only $\delta = 1$, excluded here. If the threshold exceeds one, no admissible discount factor deters the specified deviation. A numerical threshold above one is therefore an infeasibility indicator, not an economically valid patience parameter.
+The denominator is positive under $\beta>\alpha$, so division yields $\delta^*$. If instead $\beta\leq\alpha$ with $g>0$, the undivided incentive inequality cannot hold and the deviation is always profitable. The strict feasibility condition $\delta^* < 1$ is equivalent to $(\beta - \alpha)\Delta V > \alpha g$. Equality permits only $\delta = 1$, excluded here. If the threshold exceeds one, no admissible discount factor deters the specified deviation. A numerical threshold above one is therefore an infeasibility indicator, not an economically valid patience parameter.
 
 \subsection{Why the Quantifier Matters}
 
-For each firm and action, compute its own current gain and detection probability. It is not enough to test the highest current-profit action. For example, take $\Delta V = 1$ and $\alpha = 0.05$ and consider two deviations. An action with $g = 0.3$ and $\beta - \alpha = 0.5$ has threshold $60/157 \approx 0.382166$. Another with $g = 0.9$ and $\beta - \alpha = 0.01$ has threshold $180/173 \approx 1.040462$. At discount $0.90$, the first is deterred and the second is not. These values are an algebraic illustration, not experimental estimates.
+For each firm and action, compute its own current gain and detection probability. It is not enough to test the highest current-profit action. For example, take $\Delta V = 1$ and $\alpha = 0.05$ and consider two deviations. The larger current-gain action, with $g = 0.9$ and $\beta - \alpha = 0.5$, has threshold $180/271 \approx 0.664207$. A smaller current-gain action, with $g = 0.3$ and $\beta - \alpha = 0.01$, has threshold $60/59 \approx 1.016949$. At discount $0.90$, the largest current-gain action is deterred but the smaller one is not, so testing only the former would miss a profitable deviation. These values are an algebraic illustration, not experimental estimates.
 
 Main-text equation~(9) must hold for every firm's deviation in $C$, with credible punishment after every history entering $P$. Neither this example nor the finite PPO probes establishes those requirements for all prices and histories.
 
@@ -82,9 +83,9 @@ Under the main text's action-independent channel, identical innovations and init
 
 The result would fail if actors received action-dependent sales, own-action memory, or rewards as inputs, or if the intervention changed a persistent economic state. During online learning, rewards could also change weights. The archived audit freezes weights, and the PPO execution inputs exclude those additional paths.
 
-For a shorter audit, let $H$ observed post-intervention periods remain within an episode ending at $T$, with intervention at $t_0$. If both branches' rewards lie in $[0, B]$, the absolute omitted discounted gain is bounded by
+For a shorter audit, let $H$ observed post-intervention periods remain within an episode ending at $T$, with periods indexed $0,\ldots,T-1$ and intervention at $t_0$. If both branches' rewards lie in $[0, B]$, the absolute omitted discounted gain is bounded by
 \[
-\left| \sum_{t=t_0+H+1}^{T} \delta^{t-t_0} (\pi_t^{\mathrm{cut}} - \pi_t^{\mathrm{ctrl}}) \right| \leq \frac{\delta^{H+1} B}{1-\delta}.
+\left| \sum_{t=t_0+H+1}^{T-1} \delta^{t-t_0} (\pi_t^{\mathrm{cut}} - \pi_t^{\mathrm{ctrl}}) \right| \leq \frac{\delta^{H+1} B}{1-\delta}.
 \]
 Here $B = 1.5$ is valid because price minus cost is at most $1.5$ and demand is at most one. The archived probes use $H = T - t_0 - 1$, so this omitted finite-episode tail is zero. This does not bound deviations outside the probe family or establish immunity in an infinite-horizon game.
 
@@ -92,14 +93,16 @@ Here $B = 1.5$ is valid because price minus cost is at most $1.5$ and demand is 
 
 Table~\ref{tab:lit_comparison} summarizes how the present study relates to classical imperfect-monitoring repeated-game theory and prior algorithmic pricing studies. Classical repeated-game models \citep{green1984noncooperative, abreu1990toward, fudenberg1994folk} analyze infinite-horizon games in which firms observe a contemporaneous noisy public signal and follow a pre-specified public strategy (such as a two-state threshold trigger or self-generating continuation-value automaton). In those models, dynamic enforcement is characterized analytically by comparing immediate deviation gains against discounted continuation value losses.
 
-In the algorithmic pricing literature, \citet{calvano2020artificial} demonstrate that independent tabular Q-learning agents can converge to supra-competitive prices under perfect price observation, and \citet{calvano2021algorithmic} extend tabular Q-learning to an imperfect public monitoring environment adapted from \citet{green1984noncooperative}. In \citet{calvano2021algorithmic}, firms do not observe rival prices directly; instead, conditioning on a finite window of past noisy signals allows discrete-price Q-learning agents to sustain elevated markups via finite-duration ``price wars'' triggered by adverse demand or signal realizations. Conversely, recent deep reinforcement learning studies such as \citet{deng2025exploring} compare tabular Q-learning, DQN, and PPO under perfect monitoring and focus primarily on converged price elevation.
+In the algorithmic pricing literature, \citet{calvano2020artificial} demonstrate that independent tabular Q-learning agents can converge to supra-competitive prices under perfect price observation, and \citet{calvano2021algorithmic} extend tabular Q-learning to an imperfect public monitoring environment adapted from \citet{green1984noncooperative}. In \citet{calvano2021algorithmic}, firms choose discrete quantities and observe the previous market price under stochastic demand. Their intervention forces an output expansion before restoring learned play. Conversely, recent deep reinforcement learning studies such as \citet{deng2025exploring} compare tabular Q-learning, DQN, and PPO under perfect monitoring and focus primarily on converged price elevation.
 
 \begin{table}[t]
 \centering
 \caption{Comparison across imperfect public monitoring and algorithmic pricing studies.}
 \label{tab:lit_comparison}
 \footnotesize
-\begin{tabular}{@{}p{0.21\linewidth}p{0.18\linewidth}p{0.23\linewidth}p{0.11\linewidth}p{0.21\linewidth}@{}}
+\begingroup
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{0.20\linewidth}p{0.17\linewidth}p{0.22\linewidth}p{0.11\linewidth}p{0.20\linewidth}@{}}
 \toprule
 Study & Strategy / Learner & Action \& Signal Space & Horizon & Primary Diagnostic \\
 \midrule
@@ -117,14 +120,14 @@ Study & Strategy / Learner & Action \& Signal Space & Horizon & Primary Diagnost
 \addlinespace[3pt]
 \citet{calvano2021algorithmic}
   & Tabular Q-learning with finite memory
-  & Discrete price grid; noisy signal history
+  & Discrete quantities; stochastic public market price
   & Infinite
-  & Converged markup $\Delta$ \& finite price-war path \\
+  & Normalized profit \& forced-deviation path \\
 \addlinespace[3pt]
 \citet{deng2025exploring}
   & TQL, DQN, PPO
-  & Discrete / continuous prices; perfect monitoring
-  & Infinite / episodic
+  & Discrete prices (including PPO); price histories
+  & Discounted; finite training
   & Cross-algorithm price elevation comparison \\
 \addlinespace[3pt]
 Present study
@@ -134,6 +137,7 @@ Present study
   & Immediate vs.\ continuation payoff decomposition \& proved negative control \\
 \bottomrule
 \end{tabular}
+\endgroup
 \end{table}
 
 Our study addresses a distinct methodological and diagnostic gap. Rather than asking only whether converged prices exceed the static Nash benchmark or whether visual price dips follow an exogenous shock, we audit frozen continuous-action neural policies by decomposing the total payoff change from a forced unilateral price cut into its \emph{immediate impact component} ($\Delta\pi_{t_0}$) and its \emph{discounted continuation component} ($\Delta\pi^{\mathrm{cont}}$), paired with an exact action-independent channel replacement (\texttt{ppo\_ablated}, main-text Proposition~1) that provides a proved zero-response negative control. Our findings in the recurrent PPO setting do not refute the tabular Q-learning price-war results of \citet{calvano2021algorithmic}; rather, they show how counterfactual payoff decomposition and channel replacement separate genuine information-mediated continuation threats from immediate static profit losses.
@@ -144,17 +148,17 @@ Our study addresses a distinct methodological and diagnostic gap. Rather than as
 
 \subsection{Reference Prices and Parameterization of the Calibration Model}
 
-In the stationary logit market ($c=1$, $v=2$, outside utility $0$, market size $1$, $\mu=0.25$, $p_{i,t}\in[1,2.5]$), the simulator computes symmetric one-shot Nash and joint-profit reference prices on a $1{,}501$-point grid, and an independent continuous root-finding calculation yields $p^{\mathrm{N}} = 1.472927$ and $p^{\mathrm{J}} = 1.924981$. This numerical check verifies the static reference benchmarks rather than equilibrium of the learned policies. Normalized price elevation $E = (\bar{p}-p^{\mathrm{N}})/(p^{\mathrm{J}}-p^{\mathrm{N}})$ is retained without clipping to $[0,1]$; it is a linear position index between static reference prices, not a structural probability of collusion.
+In the stationary logit market ($c=1$, $v=2$, outside utility $0$, market size $1$, $\mu=0.25$, $p_{i,t}\in[1,2.5]$), the archived elevations use the $1{,}501$-point grid references $p^{\mathrm{N}}=1.473$ and $p^{\mathrm{J}}=1.925$. Independent continuous first-order conditions yield $p^{\mathrm{N}}_{\mathrm{cont}}=1.4729266600$ and $p^{\mathrm{J}}_{\mathrm{cont}}=1.9249809190$. At symmetric prices, these conditions are $1-(p-c)(1-q_i)/\mu=0$ for Nash and $1-(p-c)(1-q_1-q_2)/\mu=0$ for joint profit. They check the static benchmarks, not equilibrium of the learned policies; continuous roots are not substituted into archived elevation calculations. Normalized price elevation $E = (\bar{p}-p^{\mathrm{N}})/(p^{\mathrm{J}}-p^{\mathrm{N}})$ is retained without clipping to $[0,1]$; it is a linear position index between static reference prices, not a structural probability of collusion.
 
-The native calibration model has six unconstrained coordinates $\theta$. At the fixed threshold $\tau$, it decodes them as
+The stated calibration model has six unconstrained coordinates $\theta$. At the fixed threshold $\tau$, it decodes them as
 \[
 \mu_C = \tau + \exp(\theta_1), \quad \mu_D = \tau - \exp(\theta_2), \quad \sigma = \exp(\theta_3).
 \]
-Independent normal priors on these coordinates have means $(0.5, 0.5, -0.5, 0, 0, 0)$ and standard deviations $(1, 1, 1, 2, 2, 2)$. Specifically, Gaussian priors are placed on the log distances of the cooperative and deviating means from the threshold $\tau$ and on the log signal scale. The implementation rejects absolute values above $20$ for the log coordinates and above $100$ for the payoff location; thus the implemented target has numerical support bounds. The priors are defined on the coordinates actually sampled, and no change-of-variables Jacobian is added to that coordinate-space target.
+Independent normal priors on these coordinates have means $(0.5, 0.5, -0.5, 0, 0, 0)$ and standard deviations $(1, 1, 1, 2, 2, 2)$. Specifically, Gaussian priors are placed on the log distances of the cooperative and deviating means from the threshold $\tau$ and on the log signal scale. The documented numerical support rejects absolute values above $20$ for the log coordinates and above $100$ for the payoff location; thus the implemented target has numerical support bounds. The priors are defined on the coordinates actually sampled, and no change-of-variables Jacobian is added to that coordinate-space target.
 
 Labeled cooperative and deviating signals are modeled with normal likelihoods having means $\mu_C$ and $\mu_D$ and shared standard deviation $\sigma$. Labeled benchmark payoffs also use normal likelihoods with a supplied known payoff observation scale. These labels and restrictions are model inputs; the posterior does not discover a cartel label from an unlabeled price series.
 
-Crucially, while the native calibration model estimates both monitoring and benchmark payoff parameters, only the three monitoring coordinates $(\theta_{\mathrm{lo}}, \theta_{\mathrm{hi}}, \sigma_\varepsilon) = (\mu_D, \mu_C, \sigma)$ enter the PPO environments. Their joint rows are sampled uniformly with replacement at each episode reset, preserving empirical cross-coordinate dependence, and held fixed throughout the episode. Thus, posterior randomization in the PPO experiments represents monitoring uncertainty only; it does not randomize demand or cost primitives. Moreover, the linear interpolation in main-text Equation~(4) mapping $\min(p_{1,t},p_{2,t})$ into $[\theta_{\mathrm{lo}},\theta_{\mathrm{hi}}]$ is imposed model structure rather than an empirically estimated relationship between market prices and public reports. Because Equation~(4) clamps $m_t$ to $[\theta_{\mathrm{lo}},\theta_{\mathrm{hi}}]$, the latent signal mean saturates whenever $\min(p_{1,t},p_{2,t}) \leq p^{\mathrm{N}}$ or $\min(p_{1,t},p_{2,t}) \geq p^{\mathrm{J}}$. Consequently, when baseline prices are near $p^{\mathrm{N}}$, different downward price cuts can generate identical clamped latent means $m_t = \theta_{\mathrm{lo}}$, limiting the channel's sensitivity to cut severity.
+The stated calibration supplies monitoring coordinates $(\theta_{\mathrm{lo}},\theta_{\mathrm{hi}},\sigma)=(\mu_D,\mu_C,\sigma)$ to the PPO environment. The manifest also records \texttt{added\_sigma}=0.1. Because the simulator implementation is absent, its rule combining this setting with posterior $\sigma$ into effective report scale $\sigma_\varepsilon$ remains unverified; we do not equate the two scales or assume a variance-addition rule. Their joint rows are sampled uniformly with replacement at each episode reset, preserving empirical cross-coordinate dependence, and held fixed throughout the episode. Thus, posterior randomization in the PPO experiments represents monitoring uncertainty only; it does not randomize demand or cost primitives. Moreover, the linear interpolation in main-text Equation~(4) mapping $\min(p_{1,t},p_{2,t})$ into $[\theta_{\mathrm{lo}},\theta_{\mathrm{hi}}]$ is imposed model structure rather than an empirically estimated relationship between market prices and public reports. Because Equation~(4) clamps $m_t$ to $[\theta_{\mathrm{lo}},\theta_{\mathrm{hi}}]$, the latent signal mean saturates whenever $\min(p_{1,t},p_{2,t}) \leq p^{\mathrm{N}}$ or $\min(p_{1,t},p_{2,t}) \geq p^{\mathrm{J}}$. Consequently, when baseline prices are near $p^{\mathrm{N}}$, different downward price cuts can generate identical clamped latent means $m_t = \theta_{\mathrm{lo}}$, limiting the channel's sensitivity to cut severity.
 
 \subsection{Timing, Normalization, and Channel Replacement in the Executed Environment}
 
@@ -231,15 +235,15 @@ Episode termination has zero bootstrap; nonterminal rollout boundaries use the n
 \section{Complete Final Outcomes by Training Seed}
 %% ============================================================
 
-\begin{table}[t]
+\begin{table}[H]
 \centering
 \caption{Final evaluation of every completed PPO policy pair. Each row averages 64 evaluation episodes. B denotes informative baseline and A denotes action-independent retraining. Seed suffix 01 denotes 20261001, continuing through 10. Rank columns describe projected, time-augmented encoder features.}
 \label{tab:seed_results}
 \small
 \sisetup{table-format=1.6, round-mode=places, round-precision=6}
-\begin{tabular}{@{}ccSSSSS@{}}
+\begin{tabular}{@{}ccS S[table-format=-1.6] SSS@{}}
 \toprule
-Seed & Arm & {Price} & {Elevation} & {Surplus} & {Rank 0} & {Rank 1} \\
+Seed & Arm & {Price} & {Elevation} & {Welfare index} & {Rank 0} & {Rank 1} \\
 \midrule
 01 & B & 1.497102 & 0.053323 & 1.157867 & 1.276308 & 1.237626 \\
 01 & A & 1.488946 & 0.035278 & 1.159020 & 1.418177 & 1.386605 \\
@@ -279,9 +283,16 @@ Let $Y_s^B$ and $Y_s^A$ denote final outcomes for paired training seed $s$. We e
 \[
 \hat{\Delta} = \frac{1}{10}\sum_{s=1}^{10}(Y_s^A - Y_s^B).
 \]
-Each bootstrap draw resamples ten paired seed indices with replacement. We report the 2.5th and 97.5th percentiles from \num{2000} draws using NumPy \texttt{default\_rng}, seed 20260920. Whole-seed resampling also gives pointwise learning-curve bands. Intervals condition on the posterior, simulator, hyperparameters, and evaluation protocol; they are not simultaneous bands.
+Each bootstrap draw resamples ten paired seed indices with replacement. We report the 2.5th and 97.5th percentiles from \num{2000} draws using NumPy \texttt{default\_rng}, seed 20260920. The same $2000\times10$ index matrix is reused for each outcome, curve, and seed-level audit summary. Whole-seed resampling also gives pointwise learning-curve bands. Intervals condition on the posterior, simulator, hyperparameters, and evaluation protocol; they are not simultaneous bands.
 
 For the counterfactual price-cut audits, we intervene on either firm ($0$ or $1$) at period $t_0\in\{64, 256\}$ using normalized action cuts of $0.1$ or $0.3$, giving eight probe types per seed. Because the action-to-price mapping has slope $0.75$, these normalized cuts correspond to unclipped price reductions of $0.075$ and $0.225$. Each probe uses 128 paired rollouts sharing the episode's posterior draw $\theta$ and Gaussian innovations $\varepsilon_t$; after the single forced cut at $t_0$, both agents return to their frozen deterministic policies through period $511$. We record both the signed sum of the rival impulse response $\Delta p_t^{\mathrm{rival}}$ after impact and the sum of the negative parts of its mean path (a descriptive downward-response area, not a structural measure of punishment). Similarly, the discounted continuation gain $\Delta\pi^{\mathrm{cont}}$ includes both firms' subsequent price adjustments and does not isolate the rival's causal contribution alone. In seed-level summaries, we average probe types within each seed before resampling seeds: cut-specific means average four probe types per seed, while overall rival-response area averages all eight. Seeds receive equal weight; the 128 rollout repetitions and four within-cut probe types are not independent training replications.
+
+For clarity, with $T=512$ and $d_t=\pi_t^{\mathrm{cut}}-\pi_t^{\mathrm{ctrl}}$, the audited full gain is
+\[
+G=d_{t_0}+\Delta\pi^{\mathrm{cont}},\qquad
+\Delta\pi^{\mathrm{cont}}=\sum_{t=t_0+1}^{T-1}\delta^{t-t_0}d_t.
+\]
+The signed response area is $A=\sum_{t=t_0+1}^{T-1}\Delta p_t^{\mathrm{rival}}$, without discounting. Averaging all eight probes within each informative seed and then resampling seeds gives $\bar A=-1.3628785\times10^{-5}$ and a 95\% interval $[-2.5298314\times10^{-5},-3.4169651\times10^{-6}]$. The small downward response is statistically resolved; it is not itself evidence of continuation deterrence.
 
 \begin{table}[t]
 \centering
@@ -538,13 +549,13 @@ Seed & Firm & $t$ & {Immediate} & {$G$} & {Lower 95\%} & {Upper 95\%} & {Area} \
 
 \subsection{Provenance of the Reported Outputs}
 
-The results archive contains complete final PPO checkpoints, job configurations, learning curves, probe summaries, and suite metadata. The archived Python source hashes and all 20 final checkpoint hashes were checked against the manifest and job files when preparing the main text. The executable binary itself is not distributed in this results archive; its recorded hash alone does not establish that a newly compiled binary is byte-identical.
+The results archive contains final PPO checkpoints, job configurations, learning curves, probe summaries, and suite metadata. All 20 final checkpoint file hashes match their job records in the present audit. The manifest records Python-source, native-extension, and posterior identities, but their corresponding files are absent. Recorded hashes alone do not verify unavailable source bytes, simulator behavior, calibration, or the validity of a completed run. Implementation details stated in Sections~B--C describe the documented design; they cannot be independently confirmed from these outputs.
 
 The recorded environment uses Python 3.13.15, NumPy 2.1.3, PyTorch 2.11.0+cu128, Gymnasium 1.3.0, and device \texttt{cuda}. These are archived versions, not a new compatibility guarantee.
 
-\begin{table}[t]
+\begin{table}[H]
 \centering
-\caption{Archived cryptographic hashes for reproducibility verification.}
+\caption{Recorded identities of unavailable replication inputs; these hashes alone do not verify their contents.}
 \label{tab:hashes}
 \small
 \begin{tabular}{@{}ll@{}}
@@ -562,7 +573,7 @@ The diagnostic gate records maximum rank-normalized split $\hat{R} = 1.008945$ a
 
 \subsection{Interaction Accounting}
 
-\begin{table}[t]
+\begin{table}[H]
 \centering
 \caption{Recorded interaction counts across all completed jobs.}
 \label{tab:interactions}
@@ -599,12 +610,12 @@ Several structural boundaries govern what the analytical benchmark and the PPO a
 \item \textbf{Signal saturation near Nash:} Because Equation~(4) clamps $m_t$ at $\theta_{\mathrm{lo}}$ when $\min(p_{1,t},p_{2,t})\leq p^{\mathrm{N}}$, price cuts from baseline prices near $p^{\mathrm{N}}$ can saturate the latent signal mean. Nonsaturating signal maps and smaller, adaptive price cuts are needed before interpreting small impulse responses as insensitivity to economically relevant departures.
 \item \textbf{Probe coverage and positive deviations:} Our finite probe family tests two downward cut sizes at two intervention periods. Among the 40 small-cut probes per condition, 3 of 40 under informative monitoring (across two seeds, maximum conditional mean gain $0.003846$) and 1 of 40 under action-independent monitoring (gain $0.000122$) exhibit positive conditional mean gains whose within-policy bootstrap intervals exclude zero individually (unadjusted for multiplicity across probes). Testing upward price changes, best-response searches, multistep deviations, and alternative histories could uncover additional profitable deviations.
 \item \textbf{Missing collusive positive control:} Proposition~1 proves that our action-independent channel serves as an exact zero-response negative control ($\Delta p_t^{\mathrm{rival}}=0$ and $\Delta\pi^{\mathrm{cont}}=0$), but a negative control does not establish statistical power (sensitivity). Validating the audit as a detector with known sensitivity requires evaluating it on a known collusive positive control---such as an explicitly programmed noisy trigger policy or a verified collusive learner---that generates the predicted tradeoff between positive current deviation gains ($g>0$) and larger discounted continuation losses.
-\item \textbf{Model scope and welfare accounting:} All inference is conditional on one retained posterior, one stationary logit demand specification, and ten independent training seeds. A confidence interval spanning zero ($[-0.0241,\,0.0288]$ for price elevation difference) reflects finite-sample uncertainty and is not proof of zero effect. In addition, total surplus in main-text Equation~(3), $\mathrm{TS}(p_i,p_j)=(v-c)[q_i(p_i,p_j)+q_j(p_i,p_j)]$, is bounded above by $v-c=1$, whereas Table~1 and Table~\ref{tab:seed_results} report archived simulator values around $1.1596$, which match the standard logit social welfare formula $\mathrm{CS}(p_1,p_2)+\pi_1+\pi_2$ with $\mathrm{CS}(p_1,p_2)=\mu\log\bigl(1+\exp((v-p_1)/\mu)+\exp((v-p_2)/\mu)\bigr)$.
+\item \textbf{Model scope and welfare accounting:} All inference is conditional on one retained posterior, one stationary logit demand specification, and ten independent training seeds. A confidence interval spanning zero ($[-0.0241,\,0.0288]$ for price elevation difference) reflects finite-sample uncertainty and is not proof of zero effect. Main-text Equation~(3) defines standard logit total surplus as inclusive-value consumer surplus plus profits, with the outside option as normalization. The simpler expression $(v-c)(q_1+q_2)$ omits preference-surplus terms and is bounded by one, so it cannot represent the archived values near $1.1596$. We retain those values as an \emph{archived welfare index} (the field \texttt{mean\_total\_surplus}), without claiming to have verified its simulator formula. Aggregate mean prices and profits cannot reconstruct nonlinear, period-level welfare; that requires the missing simulator source and price trajectories.
 \end{enumerate}
 
 \subsection{Reproduce the Reported PPO Scope}
 
-Use the archived source and build instructions. Supply the original \texttt{posterior\_draws.csv} and matching \texttt{posterior\_summary.csv}, verify the posterior hash, and run \texttt{require\_converged}. Preserve joint posterior rows; independent marginal sampling changes the training distribution.
+This repository alone cannot execute the training reproduction: it lacks the \texttt{acrl} Python package, native simulator source/binary, build instructions, and calibration input files. The following is a conditional recipe requiring those original materials; it was not executed in this audit. Supply the original \texttt{posterior\_draws.csv} and matching \texttt{posterior\_summary.csv}, verify the posterior hash, and run \texttt{require\_converged}. Preserve joint posterior rows; independent marginal sampling changes the training distribution.
 
 Copy \texttt{experiments/research.json}, retaining \texttt{ppo\_baseline}, \texttt{ppo\_ablated}, and their paired comparison. Keep seeds, evaluation counts, and audit settings unchanged. Save as \texttt{experiments/ppo\_research.json}. The original suite also scheduled SAC; this PPO-only recipe changes plan identity and requires a new output directory.
 

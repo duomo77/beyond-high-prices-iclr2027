@@ -1,0 +1,58 @@
+\section{Detailed Limitations, Reproduction Steps, and Extensions}
+%% ============================================================
+
+\subsection{Expanded Discussion of Methodological and Structural Limitations}
+
+Several structural boundaries govern what the analytical benchmark and the PPO audit can and cannot establish:
+\begin{enumerate}
+\item \textbf{Conditional connection between the infinite-horizon benchmark and finite-horizon PPO:} The analytical trigger benchmark in Section~A assumes an infinite horizon with contemporaneous binary threshold signals, whereas the PPO environment passes continuous, two-period-averaged, one-step-delayed reports to a 32-step GRU over a known finite horizon of $T=512$ periods with normalized time included in the actor input and zero terminal value bootstrap. In a complete-information finite repeated game with a unique stage-game Nash equilibrium, backward induction selects stage-equilibrium play in every period. We do not invoke backward induction as a formal convergence theorem for simultaneous gradient-based neural learners under imperfect monitoring, but we emphasize that a known terminal date and observable remaining time fundamentally alter the dynamic learning problem. The near-Nash outcomes in our PPO runs neither refute the infinite-horizon trigger theorem nor prove that neural learners cannot collude in continuing tasks.
+\item \textbf{Input distribution confound:} Replacing the informative channel with $r_{t+1}\sim\mathcal{N}(1.6,0.4^2)$ eliminates action dependence but also changes the marginal mean, variance, and autocorrelation of the report stream. Separating pure information-content effects from input-scale and architecture effects requires moment-matched action-independent placebo channels, history-length controls, and nonrecurrent (MLP) baselines.
+\item \textbf{Signal saturation near Nash:} Because Equation~(4) clamps $m_t$ at $\theta_{\mathrm{lo}}$ when $\min(p_{1,t},p_{2,t})\leq p^{\mathrm{N}}$, price cuts from baseline prices near $p^{\mathrm{N}}$ can saturate the latent signal mean. Nonsaturating signal maps and smaller, adaptive price cuts are needed before interpreting small impulse responses as insensitivity to economically relevant departures.
+\item \textbf{Probe coverage and positive deviations:} Our finite probe family tests two downward cut sizes at two intervention periods. Among the 40 small-cut probes per condition, 3 of 40 under informative monitoring (across two seeds, maximum conditional mean gain $0.003846$) and 1 of 40 under action-independent monitoring (gain $0.000122$) exhibit positive conditional mean gains whose within-policy bootstrap intervals exclude zero individually (unadjusted for multiplicity across probes). Testing upward price changes, best-response searches, multistep deviations, and alternative histories could uncover additional profitable deviations.
+\item \textbf{Missing collusive positive control:} Proposition~1 proves that our action-independent channel serves as an exact zero-response negative control ($\Delta p_t^{\mathrm{rival}}=0$ and $\Delta\pi^{\mathrm{cont}}=0$), but a negative control does not establish statistical power (sensitivity). Validating the audit as a detector with known sensitivity requires evaluating it on a known collusive positive control---such as an explicitly programmed noisy trigger policy or a verified collusive learner---that generates the predicted tradeoff between positive current deviation gains ($g>0$) and larger discounted continuation losses.
+\item \textbf{Model scope and welfare accounting:} All inference is conditional on one retained posterior, one stationary logit demand specification, and ten independent training seeds. A confidence interval spanning zero ($[-0.0241,\,0.0288]$ for price elevation difference) reflects finite-sample uncertainty and is not proof of zero effect. In addition, total surplus in main-text Equation~(3), $\mathrm{TS}(p_i,p_j)=(v-c)[q_i(p_i,p_j)+q_j(p_i,p_j)]$, is bounded above by $v-c=1$, whereas Table~1 and Table~\ref{tab:seed_results} report archived simulator values around $1.1596$, which match the standard logit social welfare formula $\mathrm{CS}(p_1,p_2)+\pi_1+\pi_2$ with $\mathrm{CS}(p_1,p_2)=\mu\log\bigl(1+\exp((v-p_1)/\mu)+\exp((v-p_2)/\mu)\bigr)$.
+\end{enumerate}
+
+\subsection{Reproduce the Reported PPO Scope}
+
+Use the archived source and build instructions. Supply the original \texttt{posterior\_draws.csv} and matching \texttt{posterior\_summary.csv}, verify the posterior hash, and run \texttt{require\_converged}. Preserve joint posterior rows; independent marginal sampling changes the training distribution.
+
+Copy \texttt{experiments/research.json}, retaining \texttt{ppo\_baseline}, \texttt{ppo\_ablated}, and their paired comparison. Keep seeds, evaluation counts, and audit settings unchanged. Save as \texttt{experiments/ppo\_research.json}. The original suite also scheduled SAC; this PPO-only recipe changes plan identity and requires a new output directory.
+
+Run \texttt{python -m acrl.experiment\_suite} with \texttt{-\/-plan experiments/ppo\_research.json}, \texttt{-\/-posterior results/mcmc/posterior\_draws.csv}, \texttt{-\/-output results/ppo\_reproduction}, and \texttt{-\/-device cuda}. CPU changes run identity and may change floating-point behavior. Exact replication across hardware or package versions requires verification.
+
+The \texttt{-\/-resume} option reuses validated completed jobs with matching identities. It does not continue an interrupted optimizer state. A progress policy checkpoint alone does not restore all optimizer and random-generator states. Preserve the prior archive and identify restarted jobs.
+
+Check job statuses, hashes, and finite metrics. Recompute seed summaries from \texttt{job.json}, curves from \texttt{policy.curve.csv}, and probes from \texttt{audit\_probes.json} using Section~E's conventions. Exclude unfinished SAC runs.
+
+\subsection{Extensions That Would Strengthen the Evidence}
+
+The following are not completed experiments. They define limits of the conclusions. A Calvano-style Q-learning replication provides an external benchmark and can serve as an empirical positive control if its enforcement is independently verified. A designed trigger strategy supplies a control with a known current-gain/continuation-loss tradeoff.
+
+\begin{table}[t]
+\centering
+\caption{Unresolved extensions and the questions they would address.}
+\label{tab:extensions}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+Additional Experiment & Question It Would Resolve \\
+\midrule
+Known collusive trigger as positive control & Does the audit detect a designed gain/loss tradeoff? \\
+Calvano-style tabular Q-learning benchmark & Does the implementation reproduce prior results? \\
+Matched-moment action-independent reports & Is the effect due to information or input scale? \\
+Nonsaturating signal maps and smaller cuts & Does saturation near Nash conceal sensitivity? \\
+Recurrent versus memoryless policies & Does history processing change enforcement? \\
+Adaptive and multistep deviations & Do policies admit profits outside fixed probes? \\
+Continuing-task and horizon sensitivity & How much do terminal date and finite memory matter? \\
+Gaussian-noise sweep with fixed trigger & Does the comparative static hold empirically? \\
+Alternative learners and market primitives & How far do PPO findings generalize? \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%% ============================================================
+%% References (부록에서만 인용된 문헌 추가)
+%% ============================================================
+
+\bibliographystyle{iclr2027_conference}

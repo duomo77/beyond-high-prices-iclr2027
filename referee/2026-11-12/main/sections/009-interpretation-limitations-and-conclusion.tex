@@ -1,0 +1,21 @@
+\section{Interpretation, Limitations, and Conclusion}
+%% ============================================================
+
+Imperfect public monitoring theory shows that sustaining collusion requires linking noisy public signals to continuation value losses \citep{green1984noncooperative, abreu1990toward, fudenberg1994folk}. While tabular Q-learning can learn supra-competitive pricing under both perfect monitoring \citep{calvano2020artificial} and imperfect monitoring with finite price wars \citep{calvano2021algorithmic}, and deep RL studies report near-Nash pricing under perfect-monitoring PPO \citep{deng2025exploring}, our contribution lies in auditing \emph{how} deviations are penalized via counterfactual payoff decomposition and channel replacement.
+
+Five methodological limitations bound our conclusions (expanded in Appendix~G--H):
+\begin{itemize}
+\item \textbf{Input distribution confound:} Replacing the informative channel with $r_{t+1}\sim\mathcal{N}(1.6,0.4^2)$ alters marginal report moments alongside action dependence; isolating a pure information effect requires moment-matched placebo channels.
+\item \textbf{Signal saturation and probe scope:} Clamping in~\eqref{eq:latent} saturates latent means at or below $p^{\mathrm{N}}$, and our audit tests a finite set of one-step cuts rather than best-response or multi-step deviations.
+\item \textbf{Missing positive control:} Proposition~\ref{prop:invariance} validates our zero-response negative control, but evaluating audit sensitivity (statistical power) requires testing against a known collusive trigger positive control.
+\item \textbf{Finite horizon and model scope:} Known $512$-period termination with time inputs and ten training seeds in a single stationary market bound generalizability; an interval spanning zero does not prove exact treatment equivalence.
+\item \textbf{Reproducibility accounting:} All 20 PPO runs ($58.17$M total interactions; $44.06$ hours; MCMC split $\hat{R}\le 1.0089$, ESS $\ge 606.86$ \citep{vehtari2021rank}) are verified by SHA256 hashes in Appendix~G.
+\end{itemize}
+
+\paragraph{Conclusion.}
+High prices and post-shock price movements must not be conflated with dynamic collusive enforcement. By combining a corrected noisy-trigger benchmark with a counterfactual price-cut audit and an exact negative control, we show that in this recurrent PPO setting, early high prices decay to near-Nash levels and deviation losses are overwhelmingly immediate rather than continuation-driven. Prices are directly observable; information-mediated enforcement remains a structural hypothesis that must be audited directly.
+
+%% ============================================================
+%% References
+%% ============================================================
+\bibliographystyle{iclr2027_conference}

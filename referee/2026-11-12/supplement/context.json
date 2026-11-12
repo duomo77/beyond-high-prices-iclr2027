@@ -1,0 +1,6 @@
+{
+  "preamble": "\\documentclass{article}\n\n% 본문과 동일한 ICLR 스타일 파일 로드 (연도/파일명은 실제 업로드한 파일에 맞게 수정)\n\\usepackage{iclr2027_conference}\n\n\\usepackage{times}\n\\usepackage{amsmath, amssymb, amsthm}\n\\usepackage{booktabs}\n\\usepackage{graphicx}\n\\usepackage{natbib}\n\\usepackage{hyperref}\n\\usepackage{longtable}\n\\usepackage{siunitx}\n\\usepackage{caption}\n\n% 부록용 theorem 환경 (본문과 일관성 유지)\n\\newtheorem{proposition}{Proposition}\n\\newtheorem{remark}{Remark}\n\n% 표 캡션 포맷팅 (부록 표는 Table S1 등으로 구분 권장)\n\\captionsetup[table]{font=small, skip=4pt}\n\n\\title{Beyond High Prices: Auditing Information-Mediated Enforcement in Recurrent Pricing Agents \\\\ \\large Supplementary Material}\n\n\\author{Anonymous}\n\n",
+  "title": "Beyond High Prices: Auditing Information-Mediated Enforcement in Recurrent Pricing Agents \\\\ \\large Supplementary Material",
+  "abstracts": [],
+  "statements": []
+}

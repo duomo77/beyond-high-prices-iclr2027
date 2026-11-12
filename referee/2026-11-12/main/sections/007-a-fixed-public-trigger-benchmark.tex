@@ -1,0 +1,50 @@
+\section{A Fixed Public Trigger Benchmark}
+%% ============================================================
+
+To clarify what dynamic enforcement would require, consider an infinite-horizon repeated stage game with discount factor $\delta\in[0,1)$, a cooperative public state $C$, and an absorbing punishment state $P$ prescribing credible stage-game Nash play ($\pi^P$). In state $C$, firms earn $\pi^C > \pi^P$. A bad public signal occurs with false-alarm probability $\alpha\in[0,1)$ under cooperation and detection probability $\beta\in(0,1]$ after a specified one-period unilateral deviation yielding current profit $\pi^D > \pi^C$.
+
+\begin{proposition}[Incentive threshold]\label{prop:threshold}
+The specified one-period deviation is unprofitable in state $C$ if and only if
+\begin{equation}\label{eq:threshold}
+\delta \;\geq\;
+\frac{\pi^D - \pi^C}
+{(\pi^D-\pi^C)(1-\alpha) + (\beta-\alpha)(\pi^C-\pi^P)}.
+\end{equation}
+Equivalently, $\delta\geq\delta^*$, where
+\[
+\delta^* = \frac{g}{g(1-\alpha) + \Delta\cdot\Delta V},
+\]
+with $g=\pi^D-\pi^C>0$, $\Delta=\beta-\alpha>0$, and $\Delta V=\pi^C-\pi^P>0$. A feasible discount factor $\delta^*<1$ exists if and only if $\Delta\cdot\Delta V > \alpha g$.
+\end{proposition}
+
+\begin{proof}
+The Bellman equations for cooperation, one-period deviation, and absorbing punishment are
+\begin{align}
+V^C &= \pi^C + \delta\bigl[(1-\alpha)V^C + \alpha V^P\bigr],
+\label{eq:vc}\\
+V^D &= \pi^D + \delta\bigl[(1-\beta)V^C + \beta V^P\bigr], \qquad
+V^P = \pi^P + \delta V^P.
+\label{eq:vd}
+\end{align}
+Subtracting~\eqref{eq:vc} from~\eqref{eq:vd} yields $V^D - V^C = g - \delta\Delta(V^C-V^P)$. Subtracting $V^P=\pi^P+\delta V^P$ from~\eqref{eq:vc} gives $[1-\delta(1-\alpha)](V^C-V^P)=\pi^C-\pi^P$, so
+\[
+V^C - V^P = \frac{\Delta V}{1-\delta(1-\alpha)} > 0.
+\]
+Substituting $V^C-V^P$ into $V^D-V^C\leq 0$ gives $g[1-\delta(1-\alpha)] \leq \delta\Delta\cdot\Delta V$. Rearranging for $\delta$ yields~\eqref{eq:threshold}, and requiring $\delta^*<1$ gives $\Delta\cdot\Delta V > \alpha g$ (extended derivations and numerical examples appear in Appendix~A.1--A.2). \qed
+\end{proof}
+
+Full incentive compatibility in state $C$ requires deterring every available unilateral action $a_i$, not only the one maximizing current profit. With $g(a_i)=\pi_i(a_i,a_{-i}^C)-\pi^C$ and $\Delta(a_i)=\beta(a_i)-\alpha$, this requires
+\begin{equation}\label{eq:full}
+g(a_i)\bigl[1-\delta(1-\alpha)\bigr] \;\leq\;
+\delta\,\Delta(a_i)\,\Delta V
+\quad\text{for every firm } i \text{ and action } a_i.
+\end{equation}
+Because small price cuts may have low detection $\Delta(a_i)$, a finite set of probes cannot certify~\eqref{eq:full} over a continuous action space. Differentiating $\delta^*$ with $D=g(1-\alpha)+\Delta\cdot\Delta V > 0$ yields the comparative statics:
+\begin{equation}\label{eq:compstat}
+\frac{\partial\delta^*}{\partial\alpha}=\frac{g(g+\Delta V)}{D^2}>0,\qquad
+\frac{\partial\delta^*}{\partial\beta}=-\frac{g\,\Delta V}{D^2}<0,\qquad
+\frac{\partial\delta^*}{\partial(\pi^C-\pi^P)}=-\frac{g\Delta}{D^2}<0.
+\end{equation}
+Higher false alarms $\alpha$ erode cooperative continuation value $V^C-V^P$ and strictly raise the patience required for enforcement, while higher detection $\beta$ and larger punishment gaps $\Delta V$ lower it.
+
+%% ============================================================

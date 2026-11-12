@@ -55,3 +55,11 @@
   - Three-perspective adversarial review (Game Theory, Mathematics, MARL).
   - Cross-document consistency audit between `main_corrected.tex` and `supplement_corrected.tex`.
   - Complete list of unresolved issues and separate workstreams.
+
+
+## 2026-11-12: Repository audit and corrections
+
+- Reviewed base revision `b119bdce823da664f1fdc577efa82241e1042631`; current report: `referee/2026-11-12/report.md`.
+- Corrected threshold domain, welfare definition/reporting boundary, operational grid benchmarks, rival-response area and CI, finite-tail indexing, and source-based literature comparisons.
+- Independently reaggregated 20 completed PPO jobs and 160 probe summaries; all printed seed/probe cells and final checkpoint hashes match. Regenerated figures from archived CSV/JSON.
+- Earlier verification reports remain historical records. Missing implementation, calibration/posterior and individual-rollout files prevent full replication; hashes alone do not certify simulator semantics.

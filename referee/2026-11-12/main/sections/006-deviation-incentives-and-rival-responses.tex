@@ -1,0 +1,32 @@
+\section{Deviation Incentives and Rival Responses}
+%% ============================================================
+
+A price cut that reduces total profit is not necessarily deterred by rival retaliation; cutting prices near the Nash benchmark can simply be unprofitable immediately. Table~\ref{tab:audit} and Figure~\ref{fig:deviation} therefore compare immediate impact gains against full remaining-episode gains across the two cut sizes, treating the ten training seeds as the unit of replication (all 160 individual probe estimates appear in Appendix~E--F).
+
+\begin{figure}[t]
+    \includegraphics[width=1.0\linewidth]{media/image_2.png}
+\caption{Left: mean rival price response $\Delta p^{\mathrm{rival}}_t$ across eight probe types and ten seeds (in $10^{-6}$ price units) with 95\% seed-bootstrap intervals. Right: immediate impact gain versus full remaining-episode gain for each seed, averaged by cut size (circles: $0.1$ cut; squares: $0.3$ cut). Points lie on the $45^\circ$ equality line because continuation effects are negligible.}
+\label{fig:deviation}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Counterfactual price-cut audit across ten seeds. ``Positive probes'' counts positive conditional mean full gains among the 40 seed--firm--time probes per cut size and condition.}
+\label{tab:audit}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Channel & Action cut & Immediate gain & Full gain & Positive probes\\
+\midrule
+Informative       & 0.1 & $-0.005186$ & $-0.005192$ & 3 of 40\\
+Informative       & 0.3 & $-0.051317$ & $-0.051322$ & 0 of 40\\
+Action independent & 0.1 & $-0.004800$ & $-0.004800$ & 1 of 40\\
+Action independent & 0.3 & $-0.050273$ & $-0.050273$ & 0 of 40\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Under informative monitoring, the average full gain is $-0.005192$ for the $0.1$ action cut and $-0.051322$ for the $0.3$ action cut, while the discounted continuation component $\Delta\pi^{\mathrm{cont}}$ averages only $-5\times 10^{-6}$ in both cases. Thus, over $99.9\%$ of the deviation loss is incurred immediately at the intervention step $t_0$ because baseline prices are already near $p^{\mathrm{N}}$. Under action-independent monitoring, immediate and full gains are identical to machine precision ($\Delta\pi^{\mathrm{cont}}=0$), confirming Proposition~\ref{prop:invariance}.
+
+Inspecting individual probes also reveals that not all deviations are unprofitable: 3 of 40 small-cut probes under informative monitoring (across two seeds, max gain $0.003846$) and 1 of 40 under ablation (gain $0.000122$) yield positive conditional mean gains. Meanwhile, the signed rival-response area under informative monitoring averages $-3.7\times 10^{-6}$ price-period units (95\% CI: $[-1.1\times 10^{-5},\,3.2\times 10^{-6}]$), which is economically negligible. We also note that because Equation~\eqref{eq:latent} clamps latent means below $p^{\mathrm{N}}$, cuts from near-Nash prices can saturate the signal, limiting sensitivity to shock size (Appendix~B.2).
+
+%% ============================================================

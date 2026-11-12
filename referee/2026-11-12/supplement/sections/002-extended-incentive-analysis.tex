@@ -1,0 +1,108 @@
+\section{Extended Incentive Analysis}
+%% ============================================================
+
+This supplement gives extended proofs, the executed PPO configuration, and all 160 conditional price-cut estimates. It reanalyzes the archived ten-seed sample in each condition; no additional policies were trained. The main manuscript frames the study as a causal audit of information-channel dependence, not as a replication of every Q-learning result in the algorithmic-collusion literature.
+
+\subsection{The Value Difference and the Threshold}
+
+Consider the main text's stationary repeated game with absorbing, credible punishment. Write bounded cooperative, punishment, and specified one-period deviation payoffs as $\pi^C$, $\pi^P$, and $\pi^D$. Let $g = \pi^D - \pi^C$ and $\Delta V = \pi^C - \pi^P$. Assume $g > 0$ and $\Delta V > 0$. The signal depends on current actions; the deviator subsequently follows the prescribed automaton.
+
+Subtract the punishment Bellman equation from the cooperative equation. Both values are evaluated before the current action. This timing gives
+\[
+V^C - V^P = \frac{\pi^C - \pi^P}{1 - \delta(1 - \alpha)}.
+\]
+Since $\delta < 1$, the unique value difference is well defined. The deviation changes today's profit and the probability of entering punishment. Therefore
+\[
+V^D - V^C = g - \delta(\beta - \alpha)(V^C - V^P).
+\]
+Multiplying by the positive denominator preserves the inequality. The deviation is unprofitable if and only if
+\[
+\delta \geq \frac{g}{g(1 - \alpha) + (\beta - \alpha)\Delta V}.
+\]
+Division yields $\delta^*$. The strict feasibility condition $\delta^* < 1$ is equivalent to $(\beta - \alpha)\Delta V > \alpha g$. Equality permits only $\delta = 1$, excluded here. If the threshold exceeds one, no admissible discount factor deters the specified deviation. A numerical threshold above one is therefore an infeasibility indicator, not an economically valid patience parameter.
+
+\subsection{Why the Quantifier Matters}
+
+For each firm and action, compute its own current gain and detection probability. It is not enough to test the highest current-profit action. For example, take $\Delta V = 1$ and $\alpha = 0.05$ and consider two deviations. An action with $g = 0.3$ and $\beta - \alpha = 0.5$ has threshold $60/157 \approx 0.382166$. Another with $g = 0.9$ and $\beta - \alpha = 0.01$ has threshold $180/173 \approx 1.040462$. At discount $0.90$, the first is deterred and the second is not. These values are an algebraic illustration, not experimental estimates.
+
+Main-text equation~(9) must hold for every firm's deviation in $C$, with credible punishment after every history entering $P$. Neither this example nor the finite PPO probes establishes those requirements for all prices and histories.
+
+\subsection{Gaussian Noise and Its Boundaries}
+
+For a fixed threshold $\tau$ between $\mu_D$ and $\mu_C$, let $\sigma$ be the signal standard deviation. Define $z_C = (\tau - \mu_C)/\sigma < 0$ and $z_D = (\tau - \mu_D)/\sigma > 0$. The normal tail probabilities are $\alpha = \Phi(z_C)$ and $\beta = \Phi(z_D)$. Differentiation gives
+\[
+\frac{\partial \Delta}{\partial \sigma} = -\frac{1}{\sigma}\bigl[z_D \phi(z_D) - z_C \phi(z_C)\bigr] < 0.
+\]
+Combining these derivatives with the derivatives of $\delta^*$ gives
+\[
+\frac{\partial \delta^*}{\partial \sigma} = \frac{g\bigl[(g + \Delta V)\alpha'(\sigma) - \Delta V\,\beta'(\sigma)\bigr]}{\bigl[g(1-\alpha) + (\beta-\alpha)\Delta V\bigr]^2} > 0.
+\]
+Both channels of deterioration matter: more false punishment reduces the cooperative value, and lower detection reduces the expected loss caused by a deviation. As $\sigma$ tends to zero, the threshold tends to $g/(g + \Delta V)$. As $\sigma$ tends to infinity, it tends to $2$. If an additional independent Gaussian noise scale is $\sigma_a$, then $\sigma_{\mathrm{tot}}^2 = \sigma^2 + \sigma_a^2$ and
+\[
+\frac{\partial \delta^*}{\partial \sigma_a} = \frac{\partial \delta^*}{\partial \sigma_{\mathrm{tot}}} \cdot \frac{\sigma_a}{\sigma_{\mathrm{tot}}}.
+\]
+For positive base noise, this derivative is positive at $\sigma_a > 0$ and zero at $\sigma_a = 0$. The threshold is still strictly higher at any positive added scale than at zero. This distinction prevents an incorrect claim of a strictly positive derivative at the boundary. The result holds the threshold, means, payoffs, and trigger strategy fixed. It does not sign the response of retrained PPO policies.
+
+\subsection{Observation Invariance and Finite Audit Horizons}
+
+Under the main text's action-independent channel, identical innovations and initial report queues produce identical reports even after an action intervention. Frozen actors receive only report histories and time. Their next prescribed actions therefore coincide; induction establishes equality at every later date. In a stationary payoff model, all later profit differences vanish. This proves the exact negative control without assuming any optimizer convergence.
+
+The result would fail if actors received action-dependent sales, own-action memory, or rewards as inputs, or if the intervention changed a persistent economic state. During online learning, rewards could also change weights. The archived audit freezes weights, and the PPO execution inputs exclude those additional paths.
+
+For a shorter audit, let $H$ observed post-intervention periods remain within an episode ending at $T$, with intervention at $t_0$. If both branches' rewards lie in $[0, B]$, the absolute omitted discounted gain is bounded by
+\[
+\left| \sum_{t=t_0+H+1}^{T} \delta^{t-t_0} (\pi_t^{\mathrm{cut}} - \pi_t^{\mathrm{ctrl}}) \right| \leq \frac{\delta^{H+1} B}{1-\delta}.
+\]
+Here $B = 1.5$ is valid because price minus cost is at most $1.5$ and demand is at most one. The archived probes use $H = T - t_0 - 1$, so this omitted finite-episode tail is zero. This does not bound deviations outside the probe family or establish immunity in an infinite-horizon game.
+
+\subsection{Comparison with Classical and Algorithmic Imperfect Public Monitoring}
+
+Table~\ref{tab:lit_comparison} summarizes how the present study relates to classical imperfect-monitoring repeated-game theory and prior algorithmic pricing studies. Classical repeated-game models \citep{green1984noncooperative, abreu1990toward, fudenberg1994folk} analyze infinite-horizon games in which firms observe a contemporaneous noisy public signal and follow a pre-specified public strategy (such as a two-state threshold trigger or self-generating continuation-value automaton). In those models, dynamic enforcement is characterized analytically by comparing immediate deviation gains against discounted continuation value losses.
+
+In the algorithmic pricing literature, \citet{calvano2020artificial} demonstrate that independent tabular Q-learning agents can converge to supra-competitive prices under perfect price observation, and \citet{calvano2021algorithmic} extend tabular Q-learning to an imperfect public monitoring environment adapted from \citet{green1984noncooperative}. In \citet{calvano2021algorithmic}, firms do not observe rival prices directly; instead, conditioning on a finite window of past noisy signals allows discrete-price Q-learning agents to sustain elevated markups via finite-duration ``price wars'' triggered by adverse demand or signal realizations. Conversely, recent deep reinforcement learning studies such as \citet{deng2025exploring} compare tabular Q-learning, DQN, and PPO under perfect monitoring and focus primarily on converged price elevation.
+
+\begin{table}[t]
+\centering
+\caption{Comparison across imperfect public monitoring and algorithmic pricing studies.}
+\label{tab:lit_comparison}
+\footnotesize
+\begin{tabular}{@{}p{0.21\linewidth}p{0.18\linewidth}p{0.23\linewidth}p{0.11\linewidth}p{0.21\linewidth}@{}}
+\toprule
+Study & Strategy / Learner & Action \& Signal Space & Horizon & Primary Diagnostic \\
+\midrule
+\citet{green1984noncooperative}; \citet{abreu1990toward}; \citet{fudenberg1994folk}
+  & Fixed trigger / PPE automaton (analytical)
+  & Continuous or finite actions; contemporaneous public signal
+  & Infinite ($\delta < 1$)
+  & Analytical IC threshold \& self-generating continuation sets \\
+\addlinespace[3pt]
+\citet{calvano2020artificial}
+  & Tabular Q-learning
+  & Discrete price grid; perfect price observation
+  & Infinite
+  & Converged markup $\Delta$ \& deviation impulse path \\
+\addlinespace[3pt]
+\citet{calvano2021algorithmic}
+  & Tabular Q-learning with finite memory
+  & Discrete price grid; noisy signal history
+  & Infinite
+  & Converged markup $\Delta$ \& finite price-war path \\
+\addlinespace[3pt]
+\citet{deng2025exploring}
+  & TQL, DQN, PPO
+  & Discrete / continuous prices; perfect monitoring
+  & Infinite / episodic
+  & Cross-algorithm price elevation comparison \\
+\addlinespace[3pt]
+Present study
+  & Recurrent PPO (32-step GRU)
+  & Continuous prices $[1,2.5]$; delayed 2-period Gaussian report + ablated control
+  & Finite $T=512$ with time input
+  & Immediate vs.\ continuation payoff decomposition \& proved negative control \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Our study addresses a distinct methodological and diagnostic gap. Rather than asking only whether converged prices exceed the static Nash benchmark or whether visual price dips follow an exogenous shock, we audit frozen continuous-action neural policies by decomposing the total payoff change from a forced unilateral price cut into its \emph{immediate impact component} ($\Delta\pi_{t_0}$) and its \emph{discounted continuation component} ($\Delta\pi^{\mathrm{cont}}$), paired with an exact action-independent channel replacement (\texttt{ppo\_ablated}, main-text Proposition~1) that provides a proved zero-response negative control. Our findings in the recurrent PPO setting do not refute the tabular Q-learning price-war results of \citet{calvano2021algorithmic}; rather, they show how counterfactual payoff decomposition and channel replacement separate genuine information-mediated continuation threats from immediate static profit losses.
+
+%% ============================================================

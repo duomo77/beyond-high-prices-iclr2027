@@ -1,0 +1,43 @@
+\section{Monitoring Calibration and Signal Timing}
+%% ============================================================
+
+\subsection{Reference Prices and Parameterization of the Calibration Model}
+
+In the stationary logit market ($c=1$, $v=2$, outside utility $0$, market size $1$, $\mu=0.25$, $p_{i,t}\in[1,2.5]$), the simulator computes symmetric one-shot Nash and joint-profit reference prices on a $1{,}501$-point grid, and an independent continuous root-finding calculation yields $p^{\mathrm{N}} = 1.472927$ and $p^{\mathrm{J}} = 1.924981$. This numerical check verifies the static reference benchmarks rather than equilibrium of the learned policies. Normalized price elevation $E = (\bar{p}-p^{\mathrm{N}})/(p^{\mathrm{J}}-p^{\mathrm{N}})$ is retained without clipping to $[0,1]$; it is a linear position index between static reference prices, not a structural probability of collusion.
+
+The native calibration model has six unconstrained coordinates $\theta$. At the fixed threshold $\tau$, it decodes them as
+\[
+\mu_C = \tau + \exp(\theta_1), \quad \mu_D = \tau - \exp(\theta_2), \quad \sigma = \exp(\theta_3).
+\]
+Independent normal priors on these coordinates have means $(0.5, 0.5, -0.5, 0, 0, 0)$ and standard deviations $(1, 1, 1, 2, 2, 2)$. Specifically, Gaussian priors are placed on the log distances of the cooperative and deviating means from the threshold $\tau$ and on the log signal scale. The implementation rejects absolute values above $20$ for the log coordinates and above $100$ for the payoff location; thus the implemented target has numerical support bounds. The priors are defined on the coordinates actually sampled, and no change-of-variables Jacobian is added to that coordinate-space target.
+
+Labeled cooperative and deviating signals are modeled with normal likelihoods having means $\mu_C$ and $\mu_D$ and shared standard deviation $\sigma$. Labeled benchmark payoffs also use normal likelihoods with a supplied known payoff observation scale. These labels and restrictions are model inputs; the posterior does not discover a cartel label from an unlabeled price series.
+
+Crucially, while the native calibration model estimates both monitoring and benchmark payoff parameters, only the three monitoring coordinates $(\theta_{\mathrm{lo}}, \theta_{\mathrm{hi}}, \sigma_\varepsilon) = (\mu_D, \mu_C, \sigma)$ enter the PPO environments. Their joint rows are sampled uniformly with replacement at each episode reset, preserving empirical cross-coordinate dependence, and held fixed throughout the episode. Thus, posterior randomization in the PPO experiments represents monitoring uncertainty only; it does not randomize demand or cost primitives. Moreover, the linear interpolation in main-text Equation~(4) mapping $\min(p_{1,t},p_{2,t})$ into $[\theta_{\mathrm{lo}},\theta_{\mathrm{hi}}]$ is imposed model structure rather than an empirically estimated relationship between market prices and public reports. Because Equation~(4) clamps $m_t$ to $[\theta_{\mathrm{lo}},\theta_{\mathrm{hi}}]$, the latent signal mean saturates whenever $\min(p_{1,t},p_{2,t}) \leq p^{\mathrm{N}}$ or $\min(p_{1,t},p_{2,t}) \geq p^{\mathrm{J}}$. Consequently, when baseline prices are near $p^{\mathrm{N}}$, different downward price cuts can generate identical clamped latent means $m_t = \theta_{\mathrm{lo}}$, limiting the channel's sensitivity to cut severity.
+
+\subsection{Timing, Normalization, and Channel Replacement in the Executed Environment}
+
+\begin{table}[t]
+\centering
+\caption{Signal generation and delivery sequence within one market period.}
+\label{tab:timing}
+\small
+\begin{tabular}{@{}cl@{}}
+\toprule
+Stage & Operation \\
+\midrule
+1 & Both firms act using the existing 32-report window and time. \\
+2 & The C++ core maps actions to prices and computes demand and profits. \\
+3 & The minimum price determines the clipped latent monitoring mean. \\
+4 & The last two available latent means are averaged; one normal innovation is added. \\
+5 & The generated report enters a one-element queue; the oldest report is delivered. \\
+6 & The delivered report is normalized and appended to the next observation. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A price change at time $t$ first changes the generated report at $t$. With delay one, that report is delivered after the action at $t+1$, so the earliest actor response is at $t+2$. This accounts for the initial zero entries of the informative impulse response. Overlapping two-period latent-mean windows can spread the signal effect across reports. Normalization of the delivered report is public and fixed across all runs: the delivered report is centered at $1.6$, divided by $0.4$, and clipped to $[-5,5]$. Initial 32-report histories are filled with zeros, and pending queue entries at reset are neutral. No hidden posterior parameter $\theta$ is ever supplied directly to the actor.
+
+The ablation replaces the generated report by $r_{t+1} \sim \mathcal{N}(1.6, 0.4^2)$ independently of prices. Delay, observation window length, economic primitives, and training budgets are unchanged. This replacement enforces exact action independence rather than a numerical approximation to infinite noise variance. However, it also changes the marginal mean and scale of the delivered reports relative to the informative channel. Consequently, retraining under the ablated channel identifies the total effect of this channel replacement, not a pure information-content effect holding all marginal input moments fixed. At the same time, the ablation retains shared randomness: both firms observe the same public draw $r_{t+1}$, and identical innovation consumption across paired branches maintains common-random-number alignment.
+
+%% ============================================================

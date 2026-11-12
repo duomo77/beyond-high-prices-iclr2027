@@ -1,0 +1,528 @@
+{
+  "schema_version": 1,
+  "manuscript_sha256": "4cf4bd42cf1ffcb46a650d3da380302b36042aad54624e3fd5f96c7afa37bed4",
+  "source_files_sha256": "14c469a856e7c1d4c07a29e62bb829e82d5a59a1c83cfd1e9a339f837b3e7288",
+  "contract_sha256": "032dbef2b0536e14e9ca610bc8796bff98d99980dc3cedd99647085636bac78e",
+  "supplement_manifest": "supplement/manifest.json",
+  "executor": "coordinator",
+  "method": "self-review; separate researcher and numerical verifier consulted",
+  "model_assignment": {
+    "assignment_source": null,
+    "requested_model": null,
+    "requested_reasoning": null,
+    "actual_model": null,
+    "actual_reasoning": null,
+    "fallback_reason": null
+  },
+  "entries": [
+    {
+      "finding_id": "researcher-F001",
+      "disposition": "retained",
+      "reason": "Checked against original full source and independently recomputed where applicable; corrected in both manuscript copies.",
+      "checked_locations": [
+        "main.tex:185--198; supplement.tex:41--55"
+      ],
+      "specialist_artifacts": [
+        "theory-audit.md",
+        "archive-results.json",
+        "passes/researcher-recheck.json"
+      ],
+      "final_concern_id": "researcher-F001"
+    },
+    {
+      "finding_id": "researcher-F002",
+      "disposition": "retained",
+      "reason": "Checked against original full source and independently recomputed where applicable; corrected in both manuscript copies.",
+      "checked_locations": [
+        "main.tex:56--61 and Table final at 137--138; supplement.tex H.1"
+      ],
+      "specialist_artifacts": [
+        "theory-audit.md",
+        "archive-results.json",
+        "passes/researcher-recheck.json"
+      ],
+      "final_concern_id": "researcher-F002"
+    },
+    {
+      "finding_id": "researcher-F003",
+      "disposition": "retained",
+      "reason": "Checked against original full source and independently recomputed where applicable; corrected in both manuscript copies.",
+      "checked_locations": [
+        "main.tex:63--67; supplement.tex:147 and Table seed_results"
+      ],
+      "specialist_artifacts": [
+        "theory-audit.md",
+        "archive-results.json",
+        "passes/researcher-recheck.json"
+      ],
+      "final_concern_id": "researcher-F003"
+    },
+    {
+      "finding_id": "researcher-F004",
+      "disposition": "retained",
+      "reason": "Checked against original full source and independently recomputed where applicable; corrected in both manuscript copies.",
+      "checked_locations": [
+        "supplement.tex:85--89"
+      ],
+      "specialist_artifacts": [
+        "theory-audit.md",
+        "archive-results.json",
+        "passes/researcher-recheck.json"
+      ],
+      "final_concern_id": "researcher-F004"
+    },
+    {
+      "finding_id": "researcher-F005",
+      "disposition": "retained",
+      "reason": "Checked against original full source and independently recomputed where applicable; corrected in both manuscript copies.",
+      "checked_locations": [
+        "main.tex:147; supplement.tex:270"
+      ],
+      "specialist_artifacts": [
+        "theory-audit.md",
+        "archive-results.json",
+        "passes/researcher-recheck.json"
+      ],
+      "final_concern_id": "researcher-F005"
+    },
+    {
+      "finding_id": "researcher-F006",
+      "disposition": "retained",
+      "reason": "Checked against original full source and independently recomputed where applicable; corrected in both manuscript copies.",
+      "checked_locations": [
+        "supplement.tex:59"
+      ],
+      "specialist_artifacts": [
+        "theory-audit.md",
+        "archive-results.json",
+        "passes/researcher-recheck.json"
+      ],
+      "final_concern_id": "researcher-F006"
+    },
+    {
+      "finding_id": "audit-F001",
+      "disposition": "retained",
+      "reason": "Checked against original full source and independently recomputed where applicable; corrected in both manuscript copies.",
+      "checked_locations": [
+        "main_corrected.tex:179"
+      ],
+      "specialist_artifacts": [
+        "theory-audit.md",
+        "archive-results.json",
+        "passes/researcher-recheck.json"
+      ],
+      "final_concern_id": "audit-F001"
+    },
+    {
+      "finding_id": "audit-F002",
+      "disposition": "retained",
+      "reason": "Checked against original full source and independently recomputed where applicable; corrected in both manuscript copies.",
+      "checked_locations": [
+        "main_corrected.tex:44,48; supplement_corrected.tex:95,117"
+      ],
+      "specialist_artifacts": [
+        "theory-audit.md",
+        "archive-results.json",
+        "passes/researcher-recheck.json"
+      ],
+      "final_concern_id": "audit-F002"
+    },
+    {
+      "finding_id": "audit-F003",
+      "disposition": "conditional",
+      "reason": "Unavailable implementation leaves remain conditional; claims narrowed.",
+      "checked_locations": [
+        "supplement_corrected.tex:G.1,H.2"
+      ],
+      "specialist_artifacts": [
+        "theory-audit.md",
+        "archive-results.json",
+        "passes/researcher-recheck.json"
+      ],
+      "final_concern_id": "audit-F003"
+    },
+    {
+      "finding_id": "audit-F004",
+      "disposition": "retained",
+      "reason": "Checked against original full source and independently recomputed where applicable; corrected in both manuscript copies.",
+      "checked_locations": [
+        "main_corrected.tex:147"
+      ],
+      "specialist_artifacts": [
+        "theory-audit.md",
+        "archive-results.json",
+        "passes/researcher-recheck.json"
+      ],
+      "final_concern_id": "audit-F004"
+    },
+    {
+      "finding_id": "audit-F005",
+      "disposition": "retained",
+      "reason": "Checked against original full source and independently recomputed where applicable; corrected in both manuscript copies.",
+      "checked_locations": [
+        "main_corrected.tex:177"
+      ],
+      "specialist_artifacts": [
+        "theory-audit.md",
+        "archive-results.json",
+        "passes/researcher-recheck.json"
+      ],
+      "final_concern_id": "audit-F005"
+    },
+    {
+      "finding_id": "audit-F006",
+      "disposition": "retained",
+      "reason": "Checked against original full source and independently recomputed where applicable; corrected in both manuscript copies.",
+      "checked_locations": [
+        "main_corrected.tex:123"
+      ],
+      "specialist_artifacts": [
+        "theory-audit.md",
+        "archive-results.json",
+        "passes/researcher-recheck.json"
+      ],
+      "final_concern_id": "audit-F006"
+    },
+    {
+      "finding_id": "audit-F007",
+      "disposition": "retained",
+      "reason": "Checked against original full source and independently recomputed where applicable; corrected in both manuscript copies.",
+      "checked_locations": [
+        "supplement_corrected.tex:124"
+      ],
+      "specialist_artifacts": [
+        "theory-audit.md",
+        "archive-results.json",
+        "passes/researcher-recheck.json"
+      ],
+      "final_concern_id": "audit-F007"
+    }
+  ],
+  "concerns": [
+    {
+      "id": "researcher-F001",
+      "title": "Threshold division requires an explicit monitoring restriction",
+      "lane": "correctness",
+      "severity": "major",
+      "confidence": 0.98,
+      "evidence_status": "refuted",
+      "location": "main.tex:185--198; supplement.tex:41--55",
+      "quote": "To clarify what dynamic enforcement would require, consider an infinite-horizon repeated stage game with discount factor $\\delta\\in[0,1)$, a cooperative public state $C$, and an absorbing punishment state $P$ prescribing credible stage-game Nash play ($\\pi^P$). In state $C$, firms earn $\\pi^C > \\pi^P$. A bad public signal occurs with false-alarm probability $\\alpha\\in[0,1)$ under cooperation and detection probability $\\beta\\in(0,1]$ after a specified one-period unilateral deviation yielding current profit $\\pi^D > \\pi^C$.\nThe specified one-period deviation is unprofitable in state $C$ if and only if\n\\begin{equation}\\label{eq:threshold}\n\\delta \\;\\geq\\;\n\\frac{\\pi^D - \\pi^C}\n{(\\pi^D-\\pi^C)(1-\\alpha) + (\\beta-\\alpha)(\\pi^C-\\pi^P)}.",
+      "analysis": "The setup permits beta <= alpha. The later phrase Delta=beta-alpha>0 cannot be inferred from that setup. For alpha=.9, beta=.1, g=1, DeltaV=1, delta=.5 (e.g. piP=1, piC=2, piD=3), D=g(1-alpha)+(beta-alpha)DeltaV=-.7. The displayed condition delta >= g/D is true, but VD-VC=1-.5*(-.8)/(.95)=27/19>0, so the deviation is profitable. At D=0 the quotient is undefined. The algebra before division is correct for all alpha,beta. With beta>alpha the stated formula, feasibility condition and comparative statics are correct.",
+      "suggested_fix": "Require beta>alpha in the setup and supplement A.1 before stating the quotient threshold; explicitly state that beta<=alpha cannot deter a deviation with g>0. Alternatively state delta*D>=g without division, partitioning D<=0 and D>0.",
+      "finding_ids": [
+        "researcher-F001"
+      ],
+      "provenance": {
+        "executor": "coordinator",
+        "method": "source recheck and bounded derivation/recalculation",
+        "checked_artifacts": [
+          "main/full-source.tex",
+          "supplement/full-source.tex",
+          "theory-audit.md",
+          "archive-results.json"
+        ]
+      }
+    },
+    {
+      "id": "researcher-F002",
+      "title": "Surplus definition cannot produce the reported outcomes",
+      "lane": "correctness",
+      "severity": "major",
+      "confidence": 1.0,
+      "evidence_status": "refuted",
+      "location": "main.tex:56--61 and Table final at 137--138; supplement.tex H.1",
+      "quote": "\\mathrm{TS}(p_i,p_j) &= (v-c)\\bigl[q_i(p_i,p_j)+q_j(p_i,p_j)\\bigr].",
+      "analysis": "With v-c=1 and a positive outside-option denominator, q1+q2<1 at every admissible price pair. Thus the defined TS is <1 for every trajectory and mean. Table final reports 1.159588 and 1.159660; all supplement seed rows likewise exceed 1. The supplement H.1 itself identifies the conflict. At the continuous symmetric Nash price the stated TS is .9427536185682063, whereas CS+profit is 1.1609510313054827. The standard logit CS+profit expression is compatible with values near 1.1596.",
+      "suggested_fix": "After checking the implementation, define the reported welfare as TS=mu*log(1+exp((v-p1)/mu)+exp((v-p2)/mu))+pi1+pi2, with the outside option normalized as stated; replace the supplement warning with a consistent definition. If the intended metric really is (v-c)(q1+q2), recompute every archived welfare quantity instead.",
+      "finding_ids": [
+        "researcher-F002"
+      ],
+      "provenance": {
+        "executor": "coordinator",
+        "method": "source recheck and bounded derivation/recalculation",
+        "checked_artifacts": [
+          "main/full-source.tex",
+          "supplement/full-source.tex",
+          "theory-audit.md",
+          "archive-results.json"
+        ]
+      }
+    },
+    {
+      "id": "researcher-F003",
+      "title": "Elevation values use grid references, while definitions identify continuous roots",
+      "lane": "correctness",
+      "severity": "moderate",
+      "confidence": 1.0,
+      "evidence_status": "refuted",
+      "location": "main.tex:63--67; supplement.tex:147 and Table seed_results",
+      "quote": "On a $1{,}501$-point reference grid, the symmetric one-shot Nash price is $p^{\\mathrm{N}}\\approx 1.472927$ and the symmetric joint-profit-maximizing price is $p^{\\mathrm{J}}\\approx 1.924981$. We measure normalized price elevation as",
+      "analysis": "Bisection of the logit first-order conditions yields continuous pN=1.4729266600306228 and pJ=1.9249809190177616, agreeing with the printed roots. But the printed seed-01 baseline price/elevation pair 1.497102/.053323 gives (1.497102-1.473)/(1.925-1.473)=.05332300885, while the printed continuous roots yield .05347884571. Seed-02 and final means show the same mismatch. The 1501-point uniform grid on [1,2.5] has step .001 and cannot contain either printed continuous root. The error is small but affects the operational definitions of both E and the latent signal map, which reuse pN,pJ.",
+      "suggested_fix": "State that executed simulator reference values are grid pN=1.473,pJ=1.925; label continuous roots separately as an independent accuracy check. Ensure all E and monitoring definitions refer to the operational grid values. Preserve archived outcomes rather than silently switching denominators.",
+      "finding_ids": [
+        "researcher-F003"
+      ],
+      "provenance": {
+        "executor": "coordinator",
+        "method": "source recheck and bounded derivation/recalculation",
+        "checked_artifacts": [
+          "main/full-source.tex",
+          "supplement/full-source.tex",
+          "theory-audit.md",
+          "archive-results.json"
+        ]
+      }
+    },
+    {
+      "id": "researcher-F004",
+      "title": "Finite-horizon tail has an endpoint inconsistent with the zero-tail claim",
+      "lane": "correctness",
+      "severity": "moderate",
+      "confidence": 1.0,
+      "evidence_status": "refuted",
+      "location": "supplement.tex:85--89",
+      "quote": "\\left| \\sum_{t=t_0+H+1}^{T} \\delta^{t-t_0} (\\pi_t^{\\mathrm{cut}} - \\pi_t^{\\mathrm{ctrl}}) \\right| \\leq \\frac{\\delta^{H+1} B}{1-\\delta}.",
+      "analysis": "The manuscript elsewhere uses T=512 periods indexed 0,...,511. With H=T-t0-1, the displayed sum runs from t=T to t=T, leaving one term, while the next sentence claims it is empty. There is no period-T reward in the executed episode. The infinite-geometric upper bound itself is valid once indexing is fixed.",
+      "suggested_fix": "Explicitly index periods t=0,...,T-1 and set the displayed upper endpoint to T-1. A sharper finite bound is B*delta^(H+1)*(1-delta^(T-t0-H-1))/(1-delta), which is zero at H=T-t0-1.",
+      "finding_ids": [
+        "researcher-F004"
+      ],
+      "provenance": {
+        "executor": "coordinator",
+        "method": "source recheck and bounded derivation/recalculation",
+        "checked_artifacts": [
+          "main/full-source.tex",
+          "supplement/full-source.tex",
+          "theory-audit.md",
+          "archive-results.json"
+        ]
+      }
+    },
+    {
+      "id": "researcher-F005",
+      "title": "Feature-rank variance attribution exceeds the experiment",
+      "lane": "claims",
+      "severity": "moderate",
+      "confidence": 0.99,
+      "evidence_status": "refuted",
+      "location": "main.tex:147; supplement.tex:270",
+      "quote": "Removing action information from the public channel therefore produces no statistically resolved reduction in converged prices or improvement in surplus. Because the confidence interval spans zero with ten seeds, this result shows the absence of a large channel effect rather than formal statistical equivalence. Effective feature rank (the exponential entropy of normalized eigenvalues of centered encoder features; Appendix~D) is slightly higher under ablation, reflecting the change in marginal report variance rather than a causal pricing mechanism.",
+      "analysis": "The channel replacement changes means, variance, autocorrelation and policy training. The experiment establishes a difference in descriptive effective rank but cannot attribute that difference specifically to marginal report variance, nor determine whether it represents a causal pricing mechanism. The supplement correctly says the rank diagnostics are descriptive and do not establish a causal effect.",
+      "suggested_fix": "Replace the attribution with: effective rank is slightly higher under ablation, but the replacement also changes the marginal report distribution, so this descriptive difference identifies no causal role for representation rank in pricing.",
+      "finding_ids": [
+        "researcher-F005"
+      ],
+      "provenance": {
+        "executor": "coordinator",
+        "method": "source recheck and bounded derivation/recalculation",
+        "checked_artifacts": [
+          "main/full-source.tex",
+          "supplement/full-source.tex",
+          "theory-audit.md",
+          "archive-results.json"
+        ]
+      }
+    },
+    {
+      "id": "researcher-F006",
+      "title": "Quantifier example does not illustrate the stated highest-gain failure",
+      "lane": "exposition",
+      "severity": "minor",
+      "confidence": 0.99,
+      "evidence_status": "presentation",
+      "location": "supplement.tex:59",
+      "quote": "For each firm and action, compute its own current gain and detection probability. It is not enough to test the highest current-profit action. For example, take $\\Delta V = 1$ and $\\alpha = 0.05$ and consider two deviations. An action with $g = 0.3$ and $\\beta - \\alpha = 0.5$ has threshold $60/157 \\approx 0.382166$. Another with $g = 0.9$ and $\\beta - \\alpha = 0.01$ has threshold $180/173 \\approx 1.040462$. At discount $0.90$, the first is deterred and the second is not. These values are an algebraic illustration, not experimental estimates.",
+      "analysis": "All displayed arithmetic is correct, but the undeterred deviation is also the highest-current-profit one (g=.9). Checking that highest-gain action would detect failure in this example, so the example does not demonstrate the announced insufficiency of checking only that action. The universal quantifier in the main text is mathematically correct.",
+      "suggested_fix": "For a direct illustration, use g=.9,Delta=.5 for the high-gain deviation, threshold 180/271~.664207, and g=.3,Delta=.01 for the low-gain deviation, threshold 60/59~1.016949. At delta=.90 the high-gain action is deterred while the lower-gain action is profitable. Or describe the existing numbers simply as differing detection/gain ratios.",
+      "finding_ids": [
+        "researcher-F006"
+      ],
+      "provenance": {
+        "executor": "coordinator",
+        "method": "source recheck and bounded derivation/recalculation",
+        "checked_artifacts": [
+          "main/full-source.tex",
+          "supplement/full-source.tex",
+          "theory-audit.md",
+          "archive-results.json"
+        ]
+      }
+    },
+    {
+      "id": "audit-F001",
+      "title": "Incorrect signed response area and confidence interval",
+      "lane": "correctness",
+      "severity": "major",
+      "confidence": 0.99,
+      "evidence_status": "refuted",
+      "location": "main_corrected.tex:179",
+      "quote": "Inspecting individual probes also reveals that not all deviations are unprofitable: 3 of 40 small-cut probes under informative monitoring (across two seeds, max gain $0.003846$) and 1 of 40 under ablation (gain $0.000122$) yield positive conditional mean gains. Meanwhile, the signed rival-response area under informative monitoring averages $-3.7\\times 10^{-6}$ price-period units (95\\% CI: $[-1.1\\times 10^{-5},\\,3.2\\times 10^{-6}]$), which is economically negligible. We also note that because Equation~\\eqref{eq:latent} clamps latent means below $p^{\\mathrm{N}}$, cuts from near-Nash prices can saturate the signal, limiting sensitivity to shock size (Appendix~B.2).",
+      "analysis": "The stated seed-level estimand yields -1.3628784654429182e-5 with CI [-2.52983136306284e-5,-3.4169651189586147e-6], corroborated by each impulse-path sum.",
+      "suggested_fix": "Replace estimate and interval; acknowledge the statistically resolved but tiny downward response.",
+      "finding_ids": [
+        "audit-F001"
+      ],
+      "provenance": {
+        "executor": "coordinator",
+        "method": "source recheck and bounded derivation/recalculation",
+        "checked_artifacts": [
+          "main/full-source.tex",
+          "supplement/full-source.tex",
+          "theory-audit.md",
+          "archive-results.json"
+        ]
+      }
+    },
+    {
+      "id": "audit-F002",
+      "title": "Prior imperfect-monitoring study misidentified",
+      "lane": "claims",
+      "severity": "moderate",
+      "confidence": 0.99,
+      "evidence_status": "refuted",
+      "location": "main_corrected.tex:44,48; supplement_corrected.tex:95,117",
+      "quote": "Classical repeated-game theory shows how firms can sustain supra-competitive prices under imperfect public monitoring when rival actions are hidden and only noisy public signals are observed \\citep{green1984noncooperative, abreu1990toward, fudenberg1994folk}. In that literature, deviations are deterred when adverse public signals shift play into lower-value continuation regimes, balancing deviation detection against costly false alarms. In algorithmic pricing, \\citet{calvano2020artificial} show that tabular Q-learning sustains supra-competitive prices under perfect price observation, and \\citet{calvano2021algorithmic} extend tabular Q-learning to imperfect monitoring adapted from \\citet{green1984noncooperative}, finding that discrete-price learners conditioned on short signal histories learn finite-duration ``price wars'' after adverse signals. Meanwhile, recent deep reinforcement learning studies such as \\citet{deng2025exploring} compare tabular Q-learning, DQN, and PPO under perfect monitoring, focusing primarily on converged price levels.",
+      "analysis": "The checked primary author manuscript studies Cournot quantity actions and includes forced output interventions. The observational-only contrast is inaccurate.",
+      "suggested_fix": "Correct market/actions and credit the prior intervention diagnostic; see source locators in report.md.",
+      "finding_ids": [
+        "audit-F002"
+      ],
+      "provenance": {
+        "executor": "coordinator",
+        "method": "source recheck and bounded derivation/recalculation",
+        "checked_artifacts": [
+          "main/full-source.tex",
+          "supplement/full-source.tex",
+          "theory-audit.md",
+          "archive-results.json"
+        ]
+      }
+    },
+    {
+      "id": "audit-F003",
+      "title": "Unavailable implementation treated as reproducible archive",
+      "lane": "claims",
+      "severity": "major",
+      "confidence": 0.99,
+      "evidence_status": "conditional",
+      "location": "supplement_corrected.tex:G.1,H.2",
+      "quote": "Use the archived source and build instructions. Supply the original \\texttt{posterior\\_draws.csv} and matching \\texttt{posterior\\_summary.csv}, verify the posterior hash, and run \\texttt{require\\_converged}. Preserve joint posterior rows; independent marginal sampling changes the training distribution.",
+      "analysis": "The full recursive repository and both original ZIPs contain outputs/manuscripts but no original trainer/native simulator/posterior/calibration data. Hash records cannot establish unavailable bytes or implementation semantics.",
+      "suggested_fix": "State the boundary and conditional reproduction requirements; distinguish file integrity from training/implementation validation.",
+      "finding_ids": [
+        "audit-F003"
+      ],
+      "provenance": {
+        "executor": "coordinator",
+        "method": "source recheck and bounded derivation/recalculation",
+        "checked_artifacts": [
+          "main/full-source.tex",
+          "supplement/full-source.tex",
+          "theory-audit.md",
+          "archive-results.json"
+        ]
+      }
+    },
+    {
+      "id": "audit-F004",
+      "title": "Null-spanning CI does not rule out unspecified large effects",
+      "lane": "claims",
+      "severity": "moderate",
+      "confidence": 0.99,
+      "evidence_status": "refuted",
+      "location": "main_corrected.tex:147",
+      "quote": "Removing action information from the public channel therefore produces no statistically resolved reduction in converged prices or improvement in surplus. Because the confidence interval spans zero with ten seeds, this result shows the absence of a large channel effect rather than formal statistical equivalence. Effective feature rank (the exponential entropy of normalized eigenvalues of centered encoder features; Appendix~D) is slightly higher under ablation, reflecting the change in marginal report variance rather than a causal pricing mechanism.",
+      "analysis": "A CI spanning zero does not imply absence of a large effect without an explicit scale or equivalence margin.",
+      "suggested_fix": "Report unresolved effects of either sign and avoid absence/equivalence conclusions.",
+      "finding_ids": [
+        "audit-F004"
+      ],
+      "provenance": {
+        "executor": "coordinator",
+        "method": "source recheck and bounded derivation/recalculation",
+        "checked_artifacts": [
+          "main/full-source.tex",
+          "supplement/full-source.tex",
+          "theory-audit.md",
+          "archive-results.json"
+        ]
+      }
+    },
+    {
+      "id": "audit-F005",
+      "title": "Immediate-share strict inequality is too strong",
+      "lane": "notation",
+      "severity": "minor",
+      "confidence": 0.99,
+      "evidence_status": "presentation",
+      "location": "main_corrected.tex:177",
+      "quote": "Under informative monitoring, the average full gain is $-0.005192$ for the $0.1$ action cut and $-0.051322$ for the $0.3$ action cut, while the discounted continuation component $\\Delta\\pi^{\\mathrm{cont}}$ averages only $-5\\times 10^{-6}$ in both cases. Thus, over $99.9\\%$ of the deviation loss is incurred immediately at the intervention step $t_0$ because baseline prices are already near $p^{\\mathrm{N}}$. Under action-independent monitoring, immediate and full gains are identical to machine precision ($\\Delta\\pi^{\\mathrm{cont}}=0$), confirming Proposition~\\ref{prop:invariance}.",
+      "analysis": "The immediate/full ratios are 99.89827997% and 99.98971257%, so the first is below the stated bound.",
+      "suggested_fix": "Use an approximate percentage or report each cut separately.",
+      "finding_ids": [
+        "audit-F005"
+      ],
+      "provenance": {
+        "executor": "coordinator",
+        "method": "source recheck and bounded derivation/recalculation",
+        "checked_artifacts": [
+          "main/full-source.tex",
+          "supplement/full-source.tex",
+          "theory-audit.md",
+          "archive-results.json"
+        ]
+      }
+    },
+    {
+      "id": "audit-F006",
+      "title": "Early training attribution and steady decline unsupported",
+      "lane": "claims",
+      "severity": "minor",
+      "confidence": 0.99,
+      "evidence_status": "presentation",
+      "location": "main_corrected.tex:123",
+      "quote": "As shown in Figure~\\ref{fig:elevation}, normalized price elevation starts near $0.43$ at the first checkpoint in both conditions ($0.4318$ informative vs.\\ $0.4327$ action independent) as consequence of initial policy parameterization, and then declines steadily toward the Nash benchmark as learning progresses. By the final evaluation (Table~\\ref{tab:final}), mean price elevation is $0.0151$ under informative monitoring and $0.0188$ under action-independent monitoring, with a paired difference of $0.0037$ (95\\% bootstrap CI: $[-0.0241,\\,0.0288]$).",
+      "analysis": "First checkpoint is after 12,288 interactions. Mean curves increase at 38/99 and 42/99 successive checkpoints. Initialization causation is untested.",
+      "suggested_fix": "Identify the checkpoint and describe an overall decline with fluctuations.",
+      "finding_ids": [
+        "audit-F006"
+      ],
+      "provenance": {
+        "executor": "coordinator",
+        "method": "source recheck and bounded derivation/recalculation",
+        "checked_artifacts": [
+          "main/full-source.tex",
+          "supplement/full-source.tex",
+          "theory-audit.md",
+          "archive-results.json"
+        ]
+      }
+    },
+    {
+      "id": "audit-F007",
+      "title": "Deng comparison misstates action and horizon scope",
+      "lane": "notation",
+      "severity": "moderate",
+      "confidence": 0.99,
+      "evidence_status": "refuted",
+      "location": "supplement_corrected.tex:124",
+      "quote": "  & Discrete / continuous prices; perfect monitoring",
+      "analysis": "The cited v1 uses a discrete PPO variant (15 prices) for comparison and describes a discounted MDP with finite training, rather than establishing an episodic terminal task.",
+      "suggested_fix": "Correct table scope; see arXiv v1 Sections 4.2–5.",
+      "finding_ids": [
+        "audit-F007"
+      ],
+      "provenance": {
+        "executor": "coordinator",
+        "method": "source recheck and bounded derivation/recalculation",
+        "checked_artifacts": [
+          "main/full-source.tex",
+          "supplement/full-source.tex",
+          "theory-audit.md",
+          "archive-results.json"
+        ]
+      }
+    }
+  ]
+}

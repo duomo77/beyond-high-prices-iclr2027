@@ -1,0 +1,26 @@
+\section{Learning Architecture and Counterfactual Audit}
+%% ============================================================
+
+Each firm maintains an independent actor--critic network trained via PPO \citep{schulman2017proximal}. At each step, the actor observes the window of the 32 most recent normalized public reports and normalized episode time $t/512$, but observes neither rival prices nor realized profits during execution. A 128-unit GRU encodes the 32-report window from a fresh zero hidden state, and its final state is concatenated with time and passed through a linear projection, $\tanh$, and layer normalization. Each run trains for $10^6$ joint market interactions across $512$-period episodes with discount factor $\delta=0.99$ and no terminal value bootstrap. During training, actions are sampled from a $\tanh$-squashed Gaussian distribution; during evaluation and auditing, policies are frozen and deployed deterministically using the latent mean action $\mu(s)$ (complete hyperparameters and loss definitions are in Appendix~C).
+
+\subsection{Counterfactual Price-Cut Interventions}
+
+To test whether frozen policies deter price cuts through future punishment, we run paired counterfactual rollouts. For each trained policy pair, we intervene on firm $0$ or firm $1$ at period $t_0\in\{64,256\}$ by forcing a one-period normalized action cut of $0.1$ or $0.3$ (corresponding to unclipped price cuts of $0.075$ and $0.225$). This yields $2\times 2\times 2=8$ probe types per seed, each evaluated over 128 common-random-number rollouts sharing the same posterior draw $\theta$ and noise innovations $\varepsilon_t$. After period $t_0$, both firms revert to their frozen policies through period $511$. We track the rival impulse response
+\[
+\Delta p^{\mathrm{rival}}_t
+= p^{\mathrm{rival}}_t(\text{cut branch})
+- p^{\mathrm{rival}}_t(\text{control branch})
+\]
+and decompose the deviating firm's discounted payoff change into the immediate impact gain at $t_0$ and the continuation gain $\Delta\pi^{\mathrm{cont}}$ over $t>t_0$.
+
+\subsection{An Exact Negative Control}
+
+\begin{proposition}[Observation invariance]\label{prop:invariance}
+Suppose execution policies are frozen deterministic functions of public report histories and time. If reports are action independent, initial buffers and innovations are coupled across branches, and actions do not enter any other actor input, then a one-period action intervention at $t_0$ leaves all subsequent prescribed actions unchanged. Consequently, $\Delta p^{\mathrm{rival}}_t = 0$ for all $t > t_0$ and $\Delta\pi^{\mathrm{cont}} = 0$ pathwise.
+\end{proposition}
+
+\begin{proof}
+Prior to $t_0$, both branches share identical inputs. At $t_0$, the non-intervened rival observes the same history and selects the same action. Because the report generator under ablation does not depend on prices and shares coupled innovations, the newly queued and delivered reports remain identical across branches at $t_0+1$. By induction, all future observation windows and prescribed actions coincide for all $t>t_0$. Since stage payoffs depend only on current prices, every post-intervention payoff difference is zero, leaving only the impact-period difference at $t_0$. \qed
+\end{proof}
+
+%% ============================================================
