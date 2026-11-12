@@ -1,0 +1,67 @@
+{
+  "scope": "Exact counterexamples, logit roots, finite IC/noise checks; no training or universal computational proof",
+  "original_domain_counterexample": {
+    "denominator": "-7/10",
+    "displayed_threshold": "-10/7",
+    "actual_gain": "27/19"
+  },
+  "corrected_example": {
+    "largest_gain_threshold": "180/271",
+    "smaller_gain_threshold": "60/59"
+  },
+  "continuous_nash": 1.4729266600306228,
+  "continuous_joint_profit": 1.9249809190177616,
+  "old_welfare_at_nash": 0.9427536185682063,
+  "logit_welfare_at_nash": 1.1609510313054827,
+  "sampled_ic_cases": 1000,
+  "sampled_noise_cases": [
+    {
+      "sigma": 0.01,
+      "alpha": 0.0,
+      "beta": 1.0,
+      "delta_star": 0.5
+    },
+    {
+      "sigma": 0.05,
+      "alpha": 2.7536241186063314e-89,
+      "beta": 1.0,
+      "delta_star": 0.5
+    },
+    {
+      "sigma": 0.1,
+      "alpha": 7.619853024160593e-24,
+      "beta": 1.0,
+      "delta_star": 0.5
+    },
+    {
+      "sigma": 0.5,
+      "alpha": 0.022750131948179216,
+      "beta": 0.9772498680518208,
+      "delta_star": 0.5176654354419749
+    },
+    {
+      "sigma": 1.0,
+      "alpha": 0.15865525393145705,
+      "beta": 0.8413447460685429,
+      "delta_star": 0.6561532378546708
+    },
+    {
+      "sigma": 2.0,
+      "alpha": 0.30853753872598694,
+      "beta": 0.691462461274013,
+      "delta_star": 0.9307629771699176
+    },
+    {
+      "sigma": 10.0,
+      "alpha": 0.460172162722971,
+      "beta": 0.539827837277029,
+      "delta_star": 1.6142479677048571
+    },
+    {
+      "sigma": 100.0,
+      "alpha": 0.4960106436853684,
+      "beta": 0.5039893563146316,
+      "delta_star": 1.9532468149094417
+    }
+  ]
+}

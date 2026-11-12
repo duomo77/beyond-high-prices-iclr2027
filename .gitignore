@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# LaTeX intermediate / build files (keep .tex and .pdf)
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
